@@ -1,0 +1,240 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Traffic Jam! Multi-Agent Maze Safety Demo</title><style>
+:root{color-scheme:dark;--bg:#080e17;--card:#111d2d;--line:#27405a;--ink:#ebf5ff;--muted:#9bb2c9}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#152d47,#080e17 70%);color:var(--ink);font-family:system-ui,Segoe UI,Arial,sans-serif}.shell{max-width:1650px;margin:auto;padding:20px}.head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}h1{margin:0;font-size:clamp(25px,3vw,43px)}.sub{color:var(--muted);font-size:15px;margin-top:5px}.badge{background:#1b3450;border:1px solid #3e6287;border-radius:999px;padding:8px 14px;font-weight:700}.controls{margin:18px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:#112035;border:1px solid var(--line);border-radius:16px;padding:14px}button,select{background:#203a56;color:white;border:1px solid #406082;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:750}button:hover{background:#2a4e72}button.primary{background:#dff0ff;color:#092039}input[type=range]{accent-color:#67c7ff}label{color:#d5e7f7;font-size:14px}.flex{display:flex;align-items:center;gap:8px}.spacer{flex:1}.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.panel{background:#111c2a;border:1px solid #30465c;border-radius:16px;padding:12px;min-width:0}.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 3px 10px}.ph strong{font-size:clamp(15px,1.5vw,21px)}.tag{font-weight:800;font-size:12px;padding:6px 10px;border-radius:999px}.red{color:#ffc0c0;background:#60272d}.green{color:#b4ffd7;background:#124e38}canvas{display:block;width:100%;aspect-ratio:44/28;border-radius:10px;background:#0b1320;image-rendering:pixelated}.description{font-size:13px;color:var(--muted);margin-top:10px}.meter{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:15px}.metric{background:#111e2e;border:1px solid #2b425c;border-radius:12px;padding:11px}.metric b{display:block;font-size:clamp(18px,2.3vw,30px)}.metric small{color:var(--muted)}.legend{display:flex;align-items:center;gap:15px;flex-wrap:wrap;color:#b7cce0;font-size:13px;margin-top:13px}.dot{width:12px;height:12px;display:inline-block;border-radius:3px;margin-right:5px;vertical-align:middle}.hint{color:#b9d1e8;line-height:1.55;background:#101d2c;border-left:4px solid #6bceff;border-radius:8px;padding:12px 16px;margin-top:16px}.foot{color:#849eb6;font-size:12px;margin-top:12px}@media(max-width:1000px){.panels{grid-template-columns:1fr}.meter{grid-template-columns:repeat(2,1fr)}}
+.collision-metric{border:2px solid #647185;background:linear-gradient(135deg,#252e3b,#19222d);box-shadow:0 0 0 1px #8492a122 inset}.collision-metric b{color:#ff525f!important;font-size:clamp(29px,3.8vw,52px);text-shadow:0 0 22px #ed2f453d}.collision-metric small{font-weight:900;color:#bec8d4;letter-spacing:.025em}.triangle-symbol{display:inline-block;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:15px solid #f32f39;position:relative;transform:translateY(-2px)}.triangle-symbol:after{content:'';position:absolute;left:-5px;top:5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid #ffe13d}.inspector{margin-top:16px;background:#101b2b;border:1px solid #37516b;border-radius:17px;padding:16px}.inspector-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.inspector-head h2{margin:0;font-size:23px}.inspector-head p{color:#b3c7dc;font-size:13px;margin:5px 0 0}.inspect-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,1.65fr);gap:14px;margin-top:15px}.inspect-box{background:#0b1522;border:1px solid #2b4158;border-radius:13px;padding:13px;min-width:0}.inspect-box h3{margin:0 0 12px}.rule-row{display:flex;gap:10px;align-items:flex-start;border-bottom:1px solid #25364a;padding:9px 0}.rule-id{background:#273e57;border-radius:5px;padding:3px 5px;white-space:nowrap;font-family:monospace;font-weight:800;font-size:12px}.rule-row span:nth-child(2){flex:1}.rule-row small{display:block;color:#9db5cb;font-size:12px;margin-top:3px}.rule-state{font-size:10px;border-radius:6px;padding:5px 6px;font-weight:800}.rule-state.active{background:#7f5f15;color:#ffe49c}.rule-state.normal{background:#163c31;color:#8eebbd}.table-wrap{overflow:auto;max-height:330px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid #22364a;padding:7px;text-align:left;vertical-align:top}th{background:#182c42;position:sticky;top:0}th:first-child{min-width:74px}.agent-dot{width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:6px}.micro{color:#9bb2c9;font-size:11px;line-height:1.45}.decision{font-size:10px;font-weight:900;white-space:nowrap}.decision.waiting,.decision.queued{color:#ffd56e}.decision.moving,.decision.arrived{color:#61eeb7}.event-box{margin-top:12px;background:#0b1522;border-radius:12px;padding:12px;border:1px solid #2b4158}.event-box strong{display:block;margin-bottom:6px}.fail-text{color:#ffc1c9}.pass-text{color:#97edbd}@media(max-width:1000px){.inspect-grid{grid-template-columns:1fr}}
+.panelstats{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;margin-top:12px}.panelstat{background:#152539;border:1px solid #3b5166;border-radius:12px;padding:11px 10px;min-width:0}.panelstat b{display:block;color:#e7f2fd;font-size:clamp(21px,2vw,30px);line-height:1.16;font-variant-numeric:tabular-nums}.panelstat small{display:block;color:#a9bfd3;font-weight:750;font-size:11px;margin-top:5px;line-height:1.35}.panelstats .collision-metric{background:#252e3b;border:2px solid #647185}.panelstats .collision-metric b{color:#ff525f!important;font-size:clamp(27px,3.2vw,46px)}.completion-note{margin-top:16px;background:#13283c;border:1px solid #355771;color:#cfe6f7;border-radius:12px;padding:13px 16px;line-height:1.5;font-size:14px}@media(max-width:700px){.panelstats{grid-template-columns:1fr 1fr}.panelstats .panelstat:last-child{grid-column:1/-1}}
+</style></head><body><div class="shell"><div class="head"><div><h1>🚦 Traffic Jam! — The Multi-Agent Safety Challenge</h1><div class="sub">A crowded 44 × 28 pixel maze • identical routes • moving obstacles • live safety-rule comparison</div></div><span class="badge">INTERACTIVE DEMONSTRATION</span></div>
+<div class="controls"><button class="primary" id="play">▶ Play</button><button id="prev">◀ Step</button><button id="next">Step ▶</button><button id="reset">↺ Restart</button><label class="flex">Speed <select id="speed"><option value="0.125">⅛×</option><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></label><label class="flex">Agent candidates <select id="agents"><option>12</option><option>20</option><option selected>32</option><option>48</option></select></label><label class="flex">Seed <select id="seed"><option value="7">Maze A</option><option value="42">Maze B</option><option value="131">Maze C</option></select></label><span class="spacer"></span><b id="fleetCount">Feasible fleet: calculating…</b><b id="clock">Step 0 / 170</b></div>
+<div class="controls"><label style="min-width:85px">Timeline</label><input style="flex:1;min-width:160px" type="range" id="time" min="0" max="170" step="1" value="0"><label class="flex"><input id="paths" type="checkbox" checked> Show routes</label><label class="flex"><input id="grid" type="checkbox"> Grid lines</label><label class="flex"><input id="particles" type="checkbox" checked> 💥 effects</label><button id="find">⚡ Jump to first collision</button></div>
+<div class="panels"><div class="panel"><div class="ph"><strong>❌ WITHOUT SAFETY RULES</strong><span class="tag red" id="offstatus">Blind movement</span></div><canvas width="1056" height="672" id="off"></canvas><div class="panelstats"><div class="panelstat"><b id="offfinish">—</b><small>EXPECTED ALL-AGENT FINISH</small></div><div class="panelstat collision-metric"><b id="offcol">0</b><small>💥 COLLISIONS</small></div><div class="panelstat"><b id="offdone">0 / 0</b><small>AGENTS FINISHED SO FAR</small></div></div><div class="description">Each agent blindly advances along its individually computed shortest route. Other robots and moving obstacles are ignored.</div></div><div class="panel"><div class="ph"><strong>✅ WITH SAFETY RULES</strong><span class="tag green" id="onstatus">Coordinated movement</span></div><canvas width="1056" height="672" id="on"></canvas><div class="panelstats"><div class="panelstat"><b id="onfinish">—</b><small>EXPECTED ALL-AGENT FINISH</small></div><div class="panelstat collision-metric"><b id="oncol">0</b><small>💥 COLLISIONS</small></div><div class="panelstat"><b id="done">0 / 0</b><small>AGENTS FINISHED SO FAR</small></div></div><div class="description">The routes are identical to the left panel. Coordinated agents wait or yield to avoid modeled conflicts. This can increase completion time. Every agent is present at its start cell at step 0.</div></div></div>
+<div class="completion-note" id="completionNote">ℹ️ Both sides use identical shortest routes. Safety coordination can take longer because agents yield or wait, but reduces modeled collisions.</div>
+<div class="legend"><span><i class="dot" style="background:#58718b"></i>Walls / shelves</span><span><i class="dot" style="background:#173b58"></i>Passable corridor</span><span><i class="triangle-symbol"></i>Moving obstacle (yellow / red triangle)</span><span><i class="dot" style="background:#84d5ff"></i>Agent</span><span>💥 = collision</span><span>⏳ = agent waits</span></div>
+<section class="inspector"><div class="inspector-head"><div><h2>🔎 Live safety-rule inspector</h2><p>Select any agent and drag the timeline. Both panels use the same numbered, color-coded agents and identical routes.</p></div><label class="flex">Inspect agent <select id="inspectAgent"><option value="all">All agents</option></select></label></div>
+<div class="inspect-grid"><div class="inspect-box"><h3>Rules checked by the safety controller</h3><div id="ruleList"></div><p class="micro">Rule identifiers are DEMO-POLICY checks, not formally validated industrial safety rules. Status is derived from planned agent positions; scheduling causality is approximated.</p></div>
+<div class="inspect-box"><h3>Agents at this frame</h3><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Blind</th><th>With rules</th><th>Decision</th><th>Rule / explanation</th></tr></thead><tbody id="agentRows"></tbody></table></div></div></div>
+<div class="event-box"><strong>Frame event log</strong><div id="frameEvents" class="micro"></div></div></section>
+<div class="hint" id="narrative"><strong>Watch for the difference:</strong> Both systems use exactly the same routes. In the left panel agents push forward and may collide; on the right, they pause to let another agent or moving obstacle pass.</div><div class="foot">This is an illustrative discrete, one-cell-per-step model. Same-cell and edge-swap conflicts are checked. In the safety-policy panel, a moving obstacle may yield as part of the coordinated fleet and occupies one predicted cell per step; it is not an industrial safety guarantee. All agents start on their own maze pixels in both cases. Only feasible subsets of the originally generated agents are displayed. Original maze geometry, agent paths and moving-obstacle patrol tracks are unchanged. Excluded agents are listed; a wait-only rule cannot resolve every arbitrary fixed-route traffic configuration. This is a discrete demonstration, not a safety certification.</div></div>
+<script>
+const W=44,H=28,T=170,S=24,OBN=4;const dirs=[[1,0],[-1,0],[0,1],[0,-1]], colors=['#56c8ff','#ff8b5e','#63e6be','#e5adff','#ffe07b','#b8bbff','#f879b4','#8ed168','#ffbb7c','#9aebfd','#ee989b','#b29af5'];
+const key=(x,y)=>y*W+x;const xy=k=>[k%W,Math.floor(k/W)];const eq=(a,b)=>a===b;const hash=s=>{let h=s|0;return ()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return (h>>>0)/4294967296}};
+let world,elapsed=0,running=false,last=0,raf=0;
+function build(){const rng=hash(+document.getElementById('seed').value);let open=new Uint8Array(W*H);
+// Dense, connected orthogonal corridor network; walls form islands and shelf blocks.
+for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){let isLane=(x%5===2)||(y%5===2);let chamber=((x>=17&&x<=26)&&(y>=10&&y<=18)); if(isLane||chamber)open[key(x,y)]=1;}
+// Widen selected junctions, add regular bays and shortcuts.
+for(let y=2;y<H-1;y+=5)for(let x=2;x<W-1;x+=5){if(rng()<.60){for(let xx=x-1;xx<=x+1;xx++)for(let yy=y-1;yy<=y+1;yy++)if(xx>0&&xx<W-1&&yy>0&&yy<H-1)open[key(xx,yy)]=1;}}
+// Remove no corridors so the connected lattice is preserved.
+const traversable=[];for(let i=0;i<open.length;i++)if(open[i])traversable.push(i);
+const obs=[];const patrolDefs=[[[2,2],[22,2],[22,7],[2,7]],[[22,12],[42,12],[42,17],[22,17]],[[7,22],[32,22],[32,17],[7,17]],[[17,7],[27,7],[27,22],[17,22]]];
+for(let oi=0;oi<OBN;oi++){const corners=patrolDefs[oi];let route=[];for(let j=0;j<corners.length;j++){const a=corners[j],b=corners[(j+1)%corners.length];let dx=Math.sign(b[0]-a[0]),dy=Math.sign(b[1]-a[1]);let x=a[0],y=a[1];while(x!==b[0]||y!==b[1]){const k=key(x,y);if(open[k])route.push(k);x+=dx;y+=dy;} }obs.push(route);}
+const obstacleAt=t=>obs.map((p,i)=>p[Math.floor((t+i*9)/2)%p.length]);
+function shortest(start,goal){let prev=new Int32Array(W*H).fill(-1),q=new Int32Array(W*H);let h=0,tail=0;q[tail++]=start;prev[start]=start;while(h<tail){let k=q[h++];if(k===goal)break;let [x,y]=xy(k);for(let [dx,dy] of dirs){let nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;let n=key(nx,ny);if(open[n]&&prev[n]<0){prev[n]=k;q[tail++]=n}}}if(prev[goal]<0)return null;let p=[goal];while(p[p.length-1]!==start)p.push(prev[p[p.length-1]]);return p.reverse()}
+const forbiddenObstacleCells=new Set(obs.flat());const chosen=[];let n=+document.getElementById('agents').value,tries=0;while(chosen.length<n&&tries<5000){tries++;let a=traversable[Math.floor(rng()*traversable.length)],b=traversable[Math.floor(rng()*traversable.length)];if(a===b||forbiddenObstacleCells.has(a)||forbiddenObstacleCells.has(b))continue;let p=shortest(a,b);if(!p||p.length<15||p.length>75)continue;if(chosen.some(v=>v.start===a||v.start===b||v.goal===a||v.goal===b))continue;chosen.push({start:a,goal:b,path:p,color:colors[chosen.length%colors.length]})}
+function contacts(pos,prev,obNow,obPrev){let ev=[];for(let i=0;i<pos.length;i++){if(pos[i]===null)continue;if(obNow.includes(pos[i]))ev.push({cell:pos[i],type:'moving obstacle',agents:[i]});if(prev&&obPrev&&prev[i]!==null){for(let j=0;j<obNow.length;j++)if(prev[i]===obNow[j]&&pos[i]===obPrev[j])ev.push({cell:pos[i],type:'obstacle edge swap',agents:[i]})}for(let j=i+1;j<pos.length;j++){if(pos[j]===null)continue;if(pos[i]===pos[j])ev.push({cell:pos[i],type:'agent collision',agents:[i,j]});else if(prev&&prev[i]!==null&&prev[j]!==null&&pos[i]===prev[j]&&pos[j]===prev[i])ev.push({cell:pos[i],type:'edge swap',agents:[i,j]})}}return ev}
+function simulate(chosen){
+// All agents physically occupy their distinct start pixels at t=0 in BOTH cases.
+// The right-hand simulation is a synchronous, conservative on-grid movement policy.
+// It preserves EXACT shortest routes and permits one-pixel waits; it never stages/spawns agents.
+const off=[],on=[],offContacts=[],onContacts=[],waitCount=[],doneCount=[],wflags=[];
+const schedule=chosen.map(a=>[a.start]);
+const progress=chosen.map(()=>0);
+const obAt=Array.from({length:T+2},(_,tt)=>obstacleAt(tt));
+let blockedAt=null,blockedReason='';
+// Controlled moving obstacles follow the same patrol cells but may pause to avoid
+// the agents already physically on the floor. This is coordinated fleet policy.
+const safeObFrames=[obAt[0].slice()];
+const obProgress=obs.map((route,i)=>Math.floor((0+i*9)/2)%route.length);
+
+// Some starts can coincide with obstacle patrol. Exclude such cells at agent selection.
+for(let t=0;t<T;t++){
+ if(blockedAt!==null){for(let i=0;i<chosen.length;i++)schedule[i].push(schedule[i][t]);continue;}
+ const current=chosen.map((a,i)=>a.path[progress[i]]);
+ const occupiedNow=new Set(current);
+ const currentObs=safeObFrames[t];
+ const nextObstaclePos=obs.map((route,i)=>{
+   const proposed=obProgress[i]+((t+i*9+1)%2===0?1:0);
+   const tentative=route[proposed%route.length];
+   if(tentative!==currentObs[i]&&occupiedNow.has(tentative))return currentObs[i];
+   obProgress[i]=proposed%route.length;
+   return tentative;
+ });
+ safeObFrames.push(nextObstaclePos);
+ const nextObs=new Set(nextObstaclePos), oldObs=new Set(currentObs);
+ const choices=chosen.map((a,i)=>{
+  const idx=progress[i];
+  const next=idx+1<a.path.length?a.path[idx+1]:current[i];
+  const move=next!==current[i] && !nextObs.has(next)
+    && !currentObs.some((old,j)=>old===next&&nextObstaclePos[j]===current[i]);
+  return {next:move?next:current[i],move};
+ });
+ // Iteratively cancel moves that conflict with stationary traffic, simultaneous
+ // same-cell entry, or opposite-direction edge swaps.
+ // Rotating priority mitigates (but cannot eliminate) starvation.
+ const priority=i=>(i-t%chosen.length+chosen.length)%chosen.length;
+ let changed=true,loops=0;
+ while(changed && loops++<chosen.length*3){
+  changed=false;
+  const destination=choices.map(v=>v.next);
+  const occupant=new Map(current.map((p,i)=>[p,i]));
+  for(let i=0;i<chosen.length;i++){
+   if(!choices[i].move)continue;
+   const j=occupant.get(destination[i]);
+   if(j!==undefined && j!==i){
+     if(!choices[j].move || destination[j]===current[i]){
+       choices[i]={next:current[i],move:false};changed=true;
+     }
+   }
+  }
+  // Multiple agents claiming the same next pixel: only best-priority mover continues.
+  const groups=new Map();
+  for(let i=0;i<chosen.length;i++){
+   const dest=choices[i].next;
+   if(!groups.has(dest))groups.set(dest,[]);
+   groups.get(dest).push(i);
+  }
+  for(const group of groups.values())if(group.length>1){
+    const winner=group.some(i=>!choices[i].move)?group.find(i=>!choices[i].move):group.reduce((a,b)=>priority(a)<=priority(b)?a:b);
+    for(const i of group)if(i!==winner&&choices[i].move){choices[i]={next:current[i],move:false};changed=true;}
+  }
+ }
+ const destinations=choices.map(v=>v.next);
+ // If a predicted obstacle will occupy a pixel that cannot be vacated, refuse
+ // to declare any further safe schedule. Preserve last VALID frame for inspection.
+ const danger=destinations.findIndex((p,i)=>nextObs.has(p));
+ const pairs=new Set();let invalid=false;
+ for(let i=0;i<destinations.length;i++){
+  if(pairs.has(destinations[i]))invalid=true;
+  pairs.add(destinations[i]);
+  for(let j=i+1;j<destinations.length;j++)if(destinations[i]===current[j]&&destinations[j]===current[i]&&destinations[i]!==current[i])invalid=true;
+ }
+ if(danger!==-1 || invalid){
+  blockedAt=t;
+  blockedReason=danger!==-1?`Agent ${danger+1} cannot vacate a pixel before a moving obstacle arrives`:'No collision-free simultaneous move exists';
+  for(let i=0;i<chosen.length;i++)schedule[i].push(current[i]);
+  continue;
+ }
+ for(let i=0;i<chosen.length;i++){
+  if(choices[i].move)progress[i]++;
+  schedule[i].push(chosen[i].path[progress[i]]);
+ }
+}
+let totalWait=0,totalOff=0,totalOn=0;
+for(let t=0;t<=T;t++){
+ const offPos=chosen.map(a=>a.path[Math.min(t,a.path.length-1)]);
+ const onPos=chosen.map((a,i)=>schedule[i][t]);
+ const prevOff=t?off[t-1]:null,prevOn=t?on[t-1]:null,prevObs=t?obstacleAt(t-1):null;
+ let offEvents=contacts(offPos,prevOff,obstacleAt(t),prevObs);
+ let onEvents=t>blockedAt && blockedAt!==null?[]:contacts(onPos,prevOn,safeObFrames[t],t?safeObFrames[t-1]:null);
+ totalOff+=offEvents.length;totalOn+=onEvents.length;
+ off.push(offPos);on.push(onPos);
+ offContacts.push({events:offEvents,cumulative:totalOff});onContacts.push({events:onEvents,cumulative:totalOn});
+ let flags=[];for(let i=0;i<chosen.length;i++){
+  let wait=t>0&&onPos[i]!==null&&prevOn[i]===onPos[i]&&onPos[i]!==chosen[i].goal;
+  flags.push(wait);if(wait)totalWait++;
+ }
+ wflags.push(flags);waitCount.push(totalWait);
+ doneCount.push(onPos.filter((v,i)=>v!==null&&v===chosen[i].goal).length);
+}
+ const finishOff=chosen.length?Math.max(...chosen.map(a=>a.path.length-1)):0;
+ const allFinished=blockedAt===null&&chosen.every((a,i)=>schedule[i][T]===a.goal);
+ const finishOn=allFinished?on.findIndex(positions=>positions.every((pos,i)=>pos===chosen[i].goal)):null;
+ return {open,agents:chosen,obs,obstacleAt,off,on,offContacts,onContacts,wflags,waitCount,doneCount,finishOff,finishOn,blockedAt,blockedReason,safeObstacleAt:t=>safeObFrames[t],progress:progress.slice()};}
+
+// Retain the original seeded maze, patrol tracks, and every selected agent's original shortest path.
+// Build the largest collision-free *finishing* subset found by greedy addition.
+// Excluded agents are reported honestly rather than re-routed or staged.
+let best=null;
+for(let pass=0;pass<5;pass++){
+  const order=chosen.map((_,i)=>i);
+  if(pass===0)order.sort((a,b)=>chosen[a].path.length-chosen[b].path.length);
+  else if(pass===1)order.sort((a,b)=>chosen[b].path.length-chosen[a].path.length);
+  else if(pass===2)order.sort((a,b)=>a-b);
+  else if(pass===3)order.sort((a,b)=>b-a);
+  else order.sort((a,b)=>((a*37+Math.floor(+document.getElementById('seed').value))%chosen.length)-((b*37+Math.floor(+document.getElementById('seed').value))%chosen.length));
+  let selected=[], trial=null;
+  for(const idx of order){
+    const candidate=selected.concat([chosen[idx]]);
+    const r=simulate(candidate);
+    if(r.finishOn!==null && r.onContacts.at(-1).cumulative===0){selected=candidate;trial=r;}
+  }
+  if(trial && (!best || selected.length>best.agents.length || (selected.length===best.agents.length && trial.offContacts.at(-1).cumulative>best.offContacts.at(-1).cumulative)))best=trial;
+}
+if(!best)best=simulate([]);
+best.removed=chosen.map((a,i)=>({id:i+1,a})).filter(v=>!best.agents.includes(v.a)).map(v=>({originalId:v.id,reason:'Unresolvable collision or congestion on its original route under the fixed-route, wait-only policy'}));
+best.requestedCount=chosen.length;
+return best;
+}
+function render(canvas,pos,events,t,flags){const ctx=canvas.getContext('2d'),c=S;ctx.clearRect(0,0,canvas.width,canvas.height);
+for(let y=0;y<H;y++)for(let x=0;x<W;x++){let k=key(x,y),pass=world.open[k];ctx.fillStyle=pass?'#193c59':'#344154';ctx.fillRect(x*c,y*c,c,c);if(!pass){ctx.fillStyle='#40526a';ctx.fillRect(x*c+4,y*c+4,c-8,c-8)}if(document.getElementById('grid').checked){ctx.strokeStyle='#4d658166';ctx.strokeRect(x*c+.5,y*c+.5,c,c)}}
+if(document.getElementById('paths').checked){world.agents.forEach((a,i)=>{ctx.strokeStyle=a.color+'65';ctx.lineWidth=3;ctx.beginPath();a.path.forEach((k,j)=>{let[x,y]=xy(k);j?ctx.lineTo((x+.5)*c,(y+.5)*c):ctx.moveTo((x+.5)*c,(y+.5)*c)});ctx.stroke()})}
+world.agents.forEach((a,i)=>{let[x,y]=xy(a.goal);ctx.strokeStyle=a.color;ctx.lineWidth=2;ctx.strokeRect(x*c+4,y*c+4,c-8,c-8)});
+(flags===null?world.obstacleAt(t):world.safeObstacleAt(t)).forEach((k,i)=>{let[x,y]=xy(k),cx=(x+.5)*c,cy=(y+.5)*c;ctx.fillStyle='#ffe13d';ctx.strokeStyle='#ed363b';ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(cx,cy-c*.42);ctx.lineTo(cx+c*.43,cy+c*.35);ctx.lineTo(cx-c*.43,cy+c*.35);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#7b191f';ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('!',cx,cy+3)});
+pos.forEach((k,i)=>{if(k===null)return;let[x,y]=xy(k),a=world.agents[i];ctx.fillStyle=a.color;ctx.beginPath();ctx.arc((x+.5)*c,(y+.5)*c,c*.39,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#f7fbff';ctx.lineWidth=1.6;ctx.stroke();ctx.fillStyle='#091421';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),(x+.5)*c,(y+.5)*c);if(flags&&flags[i]){ctx.font='14px Arial';ctx.fillText('⏳',(x+.5)*c,(y-.14)*c)}});
+if(document.getElementById('particles').checked)events.forEach((e,i)=>{let[x,y]=xy(e.cell);let cx=(x+.5)*c,cy=(y+.5)*c;ctx.strokeStyle='#ff5252';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,15,0,Math.PI*2);ctx.stroke();ctx.font='22px Arial';ctx.textAlign='center';ctx.fillText('💥',cx,cy-13-i*8)})}
+
+const RULES=[
+ {id:'POL-01',title:'Moving obstacle coordination',description:'Mobile obstacles and agents avoid shared pixels; controlled obstacle traffic may also yield.'},
+ {id:'POL-02',title:'Agent-to-agent cell reservation',description:'Only one admitted agent may occupy a pixel at a given time.'},
+ {id:'POL-03',title:'No head-on edge swapping',description:'Do not exchange adjacent pixels with another agent in one step.'},
+ {id:'POL-04',title:'In-maze waiting',description:'Remain at the current pixel until the next route pixel can be occupied safely.'},
+ {id:'POL-05',title:'Goal occupancy reservation',description:'A completed agent retains its goal pixel in the simplified model.'}
+];
+const cellLabel=k=>k===null?'Outside maze':`(${xy(k)[0]}, ${xy(k)[1]})`;
+const agentLabel=i=>'A'+String(i+1).padStart(2,'0');
+function getDecision(i,t){
+ const a=world.agents[i],p=world.on[t][i],prior=t?world.on[t-1][i]:null;
+ const candidate=a.path;
+ 
+ if(world.blockedAt!==null&&t>world.blockedAt)return {action:'HALTED',rule:'POL-01–04',why:'No safe progression available; last valid positions displayed'};
+ if(p===a.goal)return {action:'ARRIVED',rule:'POL-05',why:'Goal pixel reserved'};
+ if(t===0)return {action:'READY',rule:'All checks',why:'Physically present at start cell; traffic checks active'};
+ if(p!==prior)return {action:'MOVING',rule:'POL-01–03',why:'Admissible next pixel; obstacle and traffic checks pass'};
+ const idx=candidate.indexOf(p), next=idx>=0&&idx+1<candidate.length?candidate[idx+1]:null;
+ const obs=world.safeObstacleAt(Math.min(t+1,T)), obNow=world.safeObstacleAt(t);
+ if(next!==null && obs.includes(next))return {action:'WAITING',rule:'POL-01 / POL-04',why:'Moving obstacle occupies planned next pixel'};
+ if(next!==null){
+  for(let j=0;j<world.agents.length;j++){
+   if(j===i)continue;
+   let q=world.on[Math.min(t+1,T)][j],qPrev=world.on[t][j];
+   if(q!==null&&q===next)return {action:'WAITING',rule:'POL-02 / POL-04',why:`Next pixel reserved by ${agentLabel(j)}`};
+   if(q===p&&qPrev===next)return {action:'WAITING',rule:'POL-03 / POL-04',why:`Would swap across edge with ${agentLabel(j)}`};
+  }
+ }
+ return {action:'WAITING',rule:'POL-04',why:'Scheduled waiting to retain collision-free route timing'};
+}
+function updateInspector(t){
+ const filter=document.getElementById('inspectAgent').value;
+ const decisions=world.agents.map((a,i)=>getDecision(i,t));
+ let rows='', active=new Set();
+ for(let i=0;i<world.agents.length;i++){
+  if(filter!=='all'&&+filter!==i)continue;
+  const d=decisions[i],off=world.off[t][i],on=world.on[t][i];
+  if(d.action==='WAITING'||d.action==='QUEUED')active.add('POL-04');
+  if(d.rule.startsWith('POL-01'))active.add('POL-01');
+  if(d.rule.startsWith('POL-02'))active.add('POL-02');
+  if(d.rule.startsWith('POL-03'))active.add('POL-03');
+  if(d.action==='ARRIVED')active.add('POL-05');
+  rows+=`<tr><td><span class="agent-dot" style="background:${world.agents[i].color}"></span><strong>${agentLabel(i)}</strong></td><td>${cellLabel(off)}</td><td>${cellLabel(on)}</td><td><span class="decision ${d.action.toLowerCase()}">${d.action}</span></td><td><strong>${d.rule}</strong><br><span class="micro">${d.why}</span></td></tr>`;
+ }
+ document.getElementById('agentRows').innerHTML=rows;
+ document.getElementById('ruleList').innerHTML=RULES.map(r=>`<div class="rule-row"><span class="rule-id">${r.id}</span><span><strong>${r.title}</strong><small>${r.description}</small></span><span class="rule-state ${active.has(r.id)?'active':'normal'}">${active.has(r.id)?'ACTION':'MONITOR'}</span></div>`).join('');
+ const off=world.offContacts[t].events,on=world.onContacts[t].events;
+ const describe=(events)=>events.length?events.slice(0,8).map(e=>`${e.type}: ${e.agents.map(agentLabel).join(' + ')} @ ${cellLabel(e.cell)}`).join(' · '):'none';
+ document.getElementById('frameEvents').innerHTML=`<span class="fail-text">Without rules: ${off.length} current collision event(s) — ${describe(off)}</span><br><span class="pass-text">With rules: ${on.length} current collision event(s) — ${describe(on)}</span><br><span>Policy actions: ${decisions.filter(x=>x.action==='WAITING').length} waiting, ${decisions.filter(x=>x.action==='QUEUED').length} queued, ${decisions.filter(x=>x.action==='MOVING').length} moving, ${decisions.filter(x=>x.action==='ARRIVED').length} arrived.</span>`;
+}
+function syncInspectorOptions(){
+ const s=document.getElementById('inspectAgent');s.innerHTML='<option value="all">All agents</option>'+world.agents.map((a,i)=>`<option value="${i}">${agentLabel(i)}</option>`).join('');
+}
+function update(){let t=+document.getElementById('time').value, o=world.offContacts[t],s=world.onContacts[t];render(document.getElementById('off'),world.off[t],o.events,t,null);render(document.getElementById('on'),world.on[t],s.events,t,world.wflags[t]);document.getElementById('clock').textContent=`Step ${t} / ${T}`;document.getElementById('offcol').textContent=o.cumulative;document.getElementById('oncol').textContent=s.cumulative;document.getElementById('offdone').textContent=world.off[t].filter((p,i)=>p===world.agents[i].goal).length+' / '+world.agents.length;document.getElementById('done').textContent=world.doneCount[t]+' / '+world.agents.length;document.getElementById('offstatus').textContent=o.events.length?'💥 COLLISION':'Blind movement';document.getElementById('onstatus').textContent=world.blockedAt!==null&&t>world.blockedAt?'⚠ NO SAFE PROGRESSION':s.events.length?'⚠ CONFLICT':'Safety policy active';let message=o.events.length?`💥 At step ${t}, the blind simulation has ${o.events.length} new conflict(s).`:t===0?'All agents physically occupy their distinct start pixels in both simulations.':`At step ${t}, the safety policy has issued ${world.waitCount[t]} cumulative wait actions.`;if(world.blockedAt!==null&&t>world.blockedAt)message='⚠ SAFE SCHEDULE INFEASIBLE: '+world.blockedReason+'. The last valid agent frame is frozen, not counted as successful motion.';document.getElementById('narrative').innerHTML='<strong>'+message+'</strong> The right-hand panel follows the same routes, but can pause on a pixel until it is available.';updateInspector(t);}
+function pause(){running=false;cancelAnimationFrame(raf);document.getElementById('play').textContent='▶ Play'}
+function frame(ts){if(!running)return;if(!last)last=ts;let stepms=420/(+document.getElementById('speed').value);if(ts-last>=stepms){let v=+document.getElementById('time').value;if(v>=T){pause();return}document.getElementById('time').value=v+1;update();last=ts}raf=requestAnimationFrame(frame)}
+function init(){pause();world=build();document.getElementById("fleetCount").textContent=`Showing ${world.agents.length} of ${world.requestedCount} candidate agents (${world.removed.length} excluded)`;syncInspectorOptions();
+ document.getElementById('offfinish').textContent=world.finishOff+' steps';
+ document.getElementById('onfinish').textContent=world.finishOn===null?'Not within '+T:world.finishOn+' steps';
+ const note=world.finishOn===null
+ ?`All ${world.agents.length} agents start inside the maze in both panels. The safety policy cannot complete all agents within ${T} steps${world.blockedAt!==null?' (infeasible at step '+world.blockedAt+': '+world.blockedReason+')':''}. Blind execution finishes at step ${world.finishOff}, with collision risk. No safe completion time is claimed; fixed shortest routes and waiting-only control can deadlock at high density.`
+ :`Showing ${world.agents.length} feasible agents (${world.removed.length} excluded from the original ${world.requestedCount} candidates). All displayed agents reach their goals: blind ${world.finishOff} steps / coordinated ${world.finishOn} steps. Blind conflicts: ${world.offContacts.at(-1).cumulative}, coordinated conflicts: ${world.onContacts.at(-1).cumulative}. Maze, patrols, and retained agents’ shortest routes remain unchanged.`;
+ document.getElementById('completionNote').textContent='ℹ️ '+note;
+ document.getElementById('time').value=0;update()}
+document.getElementById('play').onclick=()=>{if(running){pause();return}if(+document.getElementById('time').value>=T)document.getElementById('time').value=0;running=true;last=0;document.getElementById('play').textContent='⏸ Pause';raf=requestAnimationFrame(frame)};
+document.getElementById('prev').onclick=()=>{pause();document.getElementById('time').value=Math.max(0,+document.getElementById('time').value-1);update()};document.getElementById('next').onclick=()=>{pause();document.getElementById('time').value=Math.min(T,+document.getElementById('time').value+1);update()};document.getElementById('reset').onclick=()=>{pause();document.getElementById('time').value=0;update()};document.getElementById('find').onclick=()=>{pause();const t=world.offContacts.findIndex(v=>v.events.length);if(t>=0){document.getElementById('time').value=t;update()}};document.getElementById('time').oninput=()=>{pause();update()};['agents','seed'].forEach(id=>document.getElementById(id).onchange=init);['paths','grid','particles'].forEach(id=>document.getElementById(id).onchange=update);document.getElementById('inspectAgent').onchange=update;init();
+</script></body></html>
