@@ -1,240 +1,502 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Traffic Jam! Multi-Agent Maze Safety Demo</title><style>
-:root{color-scheme:dark;--bg:#080e17;--card:#111d2d;--line:#27405a;--ink:#ebf5ff;--muted:#9bb2c9}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#152d47,#080e17 70%);color:var(--ink);font-family:system-ui,Segoe UI,Arial,sans-serif}.shell{max-width:1650px;margin:auto;padding:20px}.head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}h1{margin:0;font-size:clamp(25px,3vw,43px)}.sub{color:var(--muted);font-size:15px;margin-top:5px}.badge{background:#1b3450;border:1px solid #3e6287;border-radius:999px;padding:8px 14px;font-weight:700}.controls{margin:18px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:#112035;border:1px solid var(--line);border-radius:16px;padding:14px}button,select{background:#203a56;color:white;border:1px solid #406082;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:750}button:hover{background:#2a4e72}button.primary{background:#dff0ff;color:#092039}input[type=range]{accent-color:#67c7ff}label{color:#d5e7f7;font-size:14px}.flex{display:flex;align-items:center;gap:8px}.spacer{flex:1}.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.panel{background:#111c2a;border:1px solid #30465c;border-radius:16px;padding:12px;min-width:0}.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 3px 10px}.ph strong{font-size:clamp(15px,1.5vw,21px)}.tag{font-weight:800;font-size:12px;padding:6px 10px;border-radius:999px}.red{color:#ffc0c0;background:#60272d}.green{color:#b4ffd7;background:#124e38}canvas{display:block;width:100%;aspect-ratio:44/28;border-radius:10px;background:#0b1320;image-rendering:pixelated}.description{font-size:13px;color:var(--muted);margin-top:10px}.meter{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:15px}.metric{background:#111e2e;border:1px solid #2b425c;border-radius:12px;padding:11px}.metric b{display:block;font-size:clamp(18px,2.3vw,30px)}.metric small{color:var(--muted)}.legend{display:flex;align-items:center;gap:15px;flex-wrap:wrap;color:#b7cce0;font-size:13px;margin-top:13px}.dot{width:12px;height:12px;display:inline-block;border-radius:3px;margin-right:5px;vertical-align:middle}.hint{color:#b9d1e8;line-height:1.55;background:#101d2c;border-left:4px solid #6bceff;border-radius:8px;padding:12px 16px;margin-top:16px}.foot{color:#849eb6;font-size:12px;margin-top:12px}@media(max-width:1000px){.panels{grid-template-columns:1fr}.meter{grid-template-columns:repeat(2,1fr)}}
-.collision-metric{border:2px solid #647185;background:linear-gradient(135deg,#252e3b,#19222d);box-shadow:0 0 0 1px #8492a122 inset}.collision-metric b{color:#ff525f!important;font-size:clamp(29px,3.8vw,52px);text-shadow:0 0 22px #ed2f453d}.collision-metric small{font-weight:900;color:#bec8d4;letter-spacing:.025em}.triangle-symbol{display:inline-block;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:15px solid #f32f39;position:relative;transform:translateY(-2px)}.triangle-symbol:after{content:'';position:absolute;left:-5px;top:5px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid #ffe13d}.inspector{margin-top:16px;background:#101b2b;border:1px solid #37516b;border-radius:17px;padding:16px}.inspector-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.inspector-head h2{margin:0;font-size:23px}.inspector-head p{color:#b3c7dc;font-size:13px;margin:5px 0 0}.inspect-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,1.65fr);gap:14px;margin-top:15px}.inspect-box{background:#0b1522;border:1px solid #2b4158;border-radius:13px;padding:13px;min-width:0}.inspect-box h3{margin:0 0 12px}.rule-row{display:flex;gap:10px;align-items:flex-start;border-bottom:1px solid #25364a;padding:9px 0}.rule-id{background:#273e57;border-radius:5px;padding:3px 5px;white-space:nowrap;font-family:monospace;font-weight:800;font-size:12px}.rule-row span:nth-child(2){flex:1}.rule-row small{display:block;color:#9db5cb;font-size:12px;margin-top:3px}.rule-state{font-size:10px;border-radius:6px;padding:5px 6px;font-weight:800}.rule-state.active{background:#7f5f15;color:#ffe49c}.rule-state.normal{background:#163c31;color:#8eebbd}.table-wrap{overflow:auto;max-height:330px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid #22364a;padding:7px;text-align:left;vertical-align:top}th{background:#182c42;position:sticky;top:0}th:first-child{min-width:74px}.agent-dot{width:10px;height:10px;display:inline-block;border-radius:50%;margin-right:6px}.micro{color:#9bb2c9;font-size:11px;line-height:1.45}.decision{font-size:10px;font-weight:900;white-space:nowrap}.decision.waiting,.decision.queued{color:#ffd56e}.decision.moving,.decision.arrived{color:#61eeb7}.event-box{margin-top:12px;background:#0b1522;border-radius:12px;padding:12px;border:1px solid #2b4158}.event-box strong{display:block;margin-bottom:6px}.fail-text{color:#ffc1c9}.pass-text{color:#97edbd}@media(max-width:1000px){.inspect-grid{grid-template-columns:1fr}}
-.panelstats{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;margin-top:12px}.panelstat{background:#152539;border:1px solid #3b5166;border-radius:12px;padding:11px 10px;min-width:0}.panelstat b{display:block;color:#e7f2fd;font-size:clamp(21px,2vw,30px);line-height:1.16;font-variant-numeric:tabular-nums}.panelstat small{display:block;color:#a9bfd3;font-weight:750;font-size:11px;margin-top:5px;line-height:1.35}.panelstats .collision-metric{background:#252e3b;border:2px solid #647185}.panelstats .collision-metric b{color:#ff525f!important;font-size:clamp(27px,3.2vw,46px)}.completion-note{margin-top:16px;background:#13283c;border:1px solid #355771;color:#cfe6f7;border-radius:12px;padding:13px 16px;line-height:1.5;font-size:14px}@media(max-width:700px){.panelstats{grid-template-columns:1fr 1fr}.panelstats .panelstat:last-child{grid-column:1/-1}}
-</style></head><body><div class="shell"><div class="head"><div><h1>🚦 Traffic Jam! — The Multi-Agent Safety Challenge</h1><div class="sub">A crowded 44 × 28 pixel maze • identical routes • moving obstacles • live safety-rule comparison</div></div><span class="badge">INTERACTIVE DEMONSTRATION</span></div>
-<div class="controls"><button class="primary" id="play">▶ Play</button><button id="prev">◀ Step</button><button id="next">Step ▶</button><button id="reset">↺ Restart</button><label class="flex">Speed <select id="speed"><option value="0.125">⅛×</option><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></label><label class="flex">Agent candidates <select id="agents"><option>12</option><option>20</option><option selected>32</option><option>48</option></select></label><label class="flex">Seed <select id="seed"><option value="7">Maze A</option><option value="42">Maze B</option><option value="131">Maze C</option></select></label><span class="spacer"></span><b id="fleetCount">Feasible fleet: calculating…</b><b id="clock">Step 0 / 170</b></div>
-<div class="controls"><label style="min-width:85px">Timeline</label><input style="flex:1;min-width:160px" type="range" id="time" min="0" max="170" step="1" value="0"><label class="flex"><input id="paths" type="checkbox" checked> Show routes</label><label class="flex"><input id="grid" type="checkbox"> Grid lines</label><label class="flex"><input id="particles" type="checkbox" checked> 💥 effects</label><button id="find">⚡ Jump to first collision</button></div>
-<div class="panels"><div class="panel"><div class="ph"><strong>❌ WITHOUT SAFETY RULES</strong><span class="tag red" id="offstatus">Blind movement</span></div><canvas width="1056" height="672" id="off"></canvas><div class="panelstats"><div class="panelstat"><b id="offfinish">—</b><small>EXPECTED ALL-AGENT FINISH</small></div><div class="panelstat collision-metric"><b id="offcol">0</b><small>💥 COLLISIONS</small></div><div class="panelstat"><b id="offdone">0 / 0</b><small>AGENTS FINISHED SO FAR</small></div></div><div class="description">Each agent blindly advances along its individually computed shortest route. Other robots and moving obstacles are ignored.</div></div><div class="panel"><div class="ph"><strong>✅ WITH SAFETY RULES</strong><span class="tag green" id="onstatus">Coordinated movement</span></div><canvas width="1056" height="672" id="on"></canvas><div class="panelstats"><div class="panelstat"><b id="onfinish">—</b><small>EXPECTED ALL-AGENT FINISH</small></div><div class="panelstat collision-metric"><b id="oncol">0</b><small>💥 COLLISIONS</small></div><div class="panelstat"><b id="done">0 / 0</b><small>AGENTS FINISHED SO FAR</small></div></div><div class="description">The routes are identical to the left panel. Coordinated agents wait or yield to avoid modeled conflicts. This can increase completion time. Every agent is present at its start cell at step 0.</div></div></div>
-<div class="completion-note" id="completionNote">ℹ️ Both sides use identical shortest routes. Safety coordination can take longer because agents yield or wait, but reduces modeled collisions.</div>
-<div class="legend"><span><i class="dot" style="background:#58718b"></i>Walls / shelves</span><span><i class="dot" style="background:#173b58"></i>Passable corridor</span><span><i class="triangle-symbol"></i>Moving obstacle (yellow / red triangle)</span><span><i class="dot" style="background:#84d5ff"></i>Agent</span><span>💥 = collision</span><span>⏳ = agent waits</span></div>
-<section class="inspector"><div class="inspector-head"><div><h2>🔎 Live safety-rule inspector</h2><p>Select any agent and drag the timeline. Both panels use the same numbered, color-coded agents and identical routes.</p></div><label class="flex">Inspect agent <select id="inspectAgent"><option value="all">All agents</option></select></label></div>
-<div class="inspect-grid"><div class="inspect-box"><h3>Rules checked by the safety controller</h3><div id="ruleList"></div><p class="micro">Rule identifiers are DEMO-POLICY checks, not formally validated industrial safety rules. Status is derived from planned agent positions; scheduling causality is approximated.</p></div>
-<div class="inspect-box"><h3>Agents at this frame</h3><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Blind</th><th>With rules</th><th>Decision</th><th>Rule / explanation</th></tr></thead><tbody id="agentRows"></tbody></table></div></div></div>
-<div class="event-box"><strong>Frame event log</strong><div id="frameEvents" class="micro"></div></div></section>
-<div class="hint" id="narrative"><strong>Watch for the difference:</strong> Both systems use exactly the same routes. In the left panel agents push forward and may collide; on the right, they pause to let another agent or moving obstacle pass.</div><div class="foot">This is an illustrative discrete, one-cell-per-step model. Same-cell and edge-swap conflicts are checked. In the safety-policy panel, a moving obstacle may yield as part of the coordinated fleet and occupies one predicted cell per step; it is not an industrial safety guarantee. All agents start on their own maze pixels in both cases. Only feasible subsets of the originally generated agents are displayed. Original maze geometry, agent paths and moving-obstacle patrol tracks are unchanged. Excluded agents are listed; a wait-only rule cannot resolve every arbitrary fixed-route traffic configuration. This is a discrete demonstration, not a safety certification.</div></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Warehouse Rulebook Simulator</title><style>
+:root{--bg:#0a111b;--panel:#121e2c;--line:#304559;--text:#e9f4fd;--dim:#a4bdcd;--a:#ff9182;--b:#43d9bc}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}.wrap{max-width:1660px;margin:auto;padding:20px}h1{font-size:31px;margin:0}h2{font-size:18px;margin:0 0 12px}.sub{color:var(--dim);line-height:1.5;margin:6px 0 16px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px}.toolbar{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:12px;margin-bottom:12px}.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.rule{border:1px solid #344657;border-radius:9px;padding:8px;display:flex;gap:9px;align-items:flex-start;background:#111b26;font-size:13px;cursor:pointer}.rule strong{color:#d9edff}.rule small{color:#97aabd}input[type=checkbox]{accent-color:#4ce2ba;width:17px;height:17px;flex:none}input[type=range]{width:100%;accent-color:#61d5fc}button,select{background:#1c3146;border:1px solid #405a71;border-radius:8px;padding:9px 13px;color:#edf6ff;cursor:pointer}button:hover{background:#2a465d}.buttons{display:flex;flex-wrap:wrap;gap:7px}.panels{display:grid;grid-template-columns:1fr 1fr;gap:12px}.map{width:100%;display:block;background:#323c47;border:1px solid #40505a;border-radius:8px}.panelTitle{display:flex;justify-content:space-between;gap:6px;align-items:center;margin-bottom:8px;font-size:18px;font-weight:800}.count{color:#ff8889;font-size:19px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.stat{background:#1a2939;border:1px solid #405267;border-radius:10px;padding:11px;text-align:center}.stat .num{font-size:24px;font-weight:900;color:#fff}.stat .lab{font-size:11px;color:#a6bacc;margin-top:4px}.charts{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin-top:12px}.chart{width:100%;height:265px}.bottom{display:grid;grid-template-columns:1fr 1.2fr;gap:12px;margin-top:12px}.events{max-height:240px;overflow:auto;font-size:13px;line-height:1.7;color:#c0d4e0}.inspect{max-height:240px;overflow:auto}.inspect table{width:100%;border-collapse:collapse;font-size:12px}.inspect th,.inspect td{padding:5px 6px;border-bottom:1px solid #324354;text-align:left}.tag{display:inline-block;padding:3px 7px;border-radius:20px;background:#263c4c;color:#b9eaff}.note{color:#94aebe;font-size:12px;line-height:1.6;margin-top:12px}.legend{display:flex;flex-wrap:wrap;gap:15px;color:#b9cbd8;font-size:12px;margin:9px 0}.lg{display:flex;align-items:center;gap:6px}.swatch{display:inline-block;width:14px;height:10px;border:2px solid}.controls .time{font-size:24px;font-weight:900}.callout{font-size:13px;color:#b6cddc;line-height:1.55}#warn{color:#ffb890} @media(max-width:1120px){.toolbar{grid-template-columns:1fr}.panels,.charts,.bottom{grid-template-columns:1fr}.rules{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.rules{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.stat .num{font-size:19px}}
+.ruleDashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.rulebox{border:1px solid #3b5268;background:#0e1a26;padding:12px;border-radius:10px}.rulebox strong{color:#c3e9ff}.rulebox .rv{color:#f3c46c;font-size:18px;font-weight:900;margin-top:4px}.rulebox p{font-size:12px;color:#a8c3d2;margin:5px 0 0}.rulebox .good{color:#48dfb7}.rulebox .bad{color:#ff8686}@media(max-width:920px){.ruleDashboard{grid-template-columns:repeat(2,1fr)}}@media(max-width:580px){.ruleDashboard{grid-template-columns:1fr}}</style></head><body><div class="wrap"><h1>Warehouse Safety Simulator V18 <span class="tag">Use-case-inspired · interactive PoC</span></h1><div class="sub">Six-rule interactive testbed · 92 × 58 warehouse layout inspired by your reference: rack aisles, forklift operation area, humanoid zone, handover bay and parking area. Identical initial actor missions in both simulations; select the rules you want to enforce.</div>
+<div class="toolbar"><div class="card"><h2>Independent Safety Rule Selector</h2><div class="callout" style="margin-bottom:10px">Route complexity <select id="complexity"><option value="simple">Simple · shortest paths</option><option value="moderate" selected>Moderate · 2–3 turns</option><option value="complex">Complex · multi-aisle routes</option></select> &nbsp; Robot agents <select id="agentCount"><option value="8">8 robots + 3 forklifts</option><option value="12" selected>12 robots + 3 forklifts</option><option value="16">16 robots + 3 forklifts</option></select></div><div class="rules" id="ruleList"></div><div class="note">Spatial checks are simplified envelope/proxy checks. Handover uses a two-actor demonstration proxy, not the original SR-012 electric-jack scenario.</div></div><div class="card controls"><h2>Timeline <span id="timeLabel" class="time">0 / 220</span></h2><input type="range" id="time" min="0" max="220" value="0" step="1"><div class="buttons"><button id="play">▶ Play</button><button id="prev">−1</button><button id="next">+1</button><button id="reset">Reset</button><select id="speed"><option value=".25">¼× slow</option><option value=".5">½×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></div><p class="callout">Choose a rule above, then drag the timeline. Each checkbox applies its own spatial or scheduling condition. Floating agent tags mark an active restriction or a rejected planned movement; they disappear when its condition is released. SR-012* is a two-actor proxy, not formal EJ verification.</p><p id="warn"></p><p id="safetyStatus" class="callout" style="color:#7af0ca"></p></div><div class="card"><h2>Score model</h2><div class="callout">Illustrative operational utility, <em>not</em> an ISO risk score.</div><label class="callout">Initial points <input id="points" type="number" value="1000" min="0" max="100000" style="width:75px"></label><br><label class="callout">Step cost <input id="stepCost" type="number" value="1" min="0" max="100" style="width:75px"></label><br><label class="callout">Collision penalty <input id="penalty" type="number" value="40" min="0" max="500" style="width:75px"></label><div class="note">Score = initial − elapsed-step cost − collision penalty. Running costs stop after each scenario completes.</div></div></div>
+<div class="legend"><span class="lg"><i class="swatch" style="border-color:#ffe629"></i>Forklift operation zone</span><span class="lg"><i class="swatch" style="border-color:#ff5969"></i>Humanoid operation zone</span><span class="lg"><i class="swatch" style="border-color:#b16bff"></i>Handover bay</span><span class="lg">◎ Start point · ★ Goal point · 🔴 Flashing red = arrived · ✨ Occupied cells pulse · pale shadow = previous cell · 🚜 FL = 2×3 / 3×2 rotating footprint · <b style="color:#6ae5ff">●</b> Humanoid = 1 cell · <b style="color:#ffec55">▲</b> Moving obstacle</span></div>
+<div class="panels"><section class="card"><div class="panelTitle">Without Safety Rules <span class="count">💥 <span id="collA">0</span> collisions</span></div><canvas class="map" id="mapA" width="1288" height="812"></canvas><div class="stats"><div class="stat"><div class="num" id="finishA">—</div><div class="lab">All agents finish · steps</div></div><div class="stat"><div class="num" id="scoreA">1000</div><div class="lab">Current score</div></div><div class="stat"><div class="num" id="doneA">0</div><div class="lab">Completed missions</div></div></div></section><section class="card"><div class="panelTitle">With Selected Rules <span class="count">💥 <span id="collB">0</span> collisions</span></div><canvas class="map" id="mapB" width="1288" height="812"></canvas><div class="stats"><div class="stat"><div class="num" id="finishB">—</div><div class="lab">All agents finish · steps</div></div><div class="stat"><div class="num" id="scoreB">1000</div><div class="lab">Current score</div></div><div class="stat"><div class="num" id="doneB">0</div><div class="lab">Completed missions</div></div></div></section></div>
+<div class="charts"><div class="card"><h2>Live cumulative score · simulation step →</h2><canvas class="chart" id="line"></canvas></div><div class="card"><h2>Live accumulated loss (lower is better)</h2><canvas class="chart" id="bar"></canvas></div></div><div class="card" style="margin-top:12px"><h2>Independent Rule Verification Dashboard</h2><div id="ruleDashboard" class="ruleDashboard"></div><p class="note">Triggered = selected rule prevented an attempted violation; violations = independent evaluator observed a forbidden situation. SR-012 uses a virtual EJ permission request (no EJ movement) and is partial verification only. All threshold distances are illustrative grid assumptions.</p></div><div class="bottom"><div class="card"><h2>Rule Event Log · selected frame</h2><div class="events" id="events"></div></div><div class="card"><h2>Agent Inspector · selected frame</h2><div class="inspect" id="inspector"></div></div></div><div class="note">Model scope: geometric 2D demonstrator, not a validated BMW map, controller, real sensor model or safety certification. The synthetic expansion and timing are illustrative. In the original Rulebook SR-012 applies to electric-jack access and shelf transfer; this two-actor handover representation is a proxy only. Geometry/sensor margins and incident probabilities require site validation. Scheduling implements a simplified traffic-reservation safety policy. Selected rule IDs are explanatory proxies and are not full formal verifications. Results may change when configuration changes.</div></div>
 <script>
-const W=44,H=28,T=170,S=24,OBN=4;const dirs=[[1,0],[-1,0],[0,1],[0,-1]], colors=['#56c8ff','#ff8b5e','#63e6be','#e5adff','#ffe07b','#b8bbff','#f879b4','#8ed168','#ffbb7c','#9aebfd','#ee989b','#b29af5'];
-const key=(x,y)=>y*W+x;const xy=k=>[k%W,Math.floor(k/W)];const eq=(a,b)=>a===b;const hash=s=>{let h=s|0;return ()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return (h>>>0)/4294967296}};
-let world,elapsed=0,running=false,last=0,raf=0;
-function build(){const rng=hash(+document.getElementById('seed').value);let open=new Uint8Array(W*H);
-// Dense, connected orthogonal corridor network; walls form islands and shelf blocks.
-for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){let isLane=(x%5===2)||(y%5===2);let chamber=((x>=17&&x<=26)&&(y>=10&&y<=18)); if(isLane||chamber)open[key(x,y)]=1;}
-// Widen selected junctions, add regular bays and shortcuts.
-for(let y=2;y<H-1;y+=5)for(let x=2;x<W-1;x+=5){if(rng()<.60){for(let xx=x-1;xx<=x+1;xx++)for(let yy=y-1;yy<=y+1;yy++)if(xx>0&&xx<W-1&&yy>0&&yy<H-1)open[key(xx,yy)]=1;}}
-// Remove no corridors so the connected lattice is preserved.
-const traversable=[];for(let i=0;i<open.length;i++)if(open[i])traversable.push(i);
-const obs=[];const patrolDefs=[[[2,2],[22,2],[22,7],[2,7]],[[22,12],[42,12],[42,17],[22,17]],[[7,22],[32,22],[32,17],[7,17]],[[17,7],[27,7],[27,22],[17,22]]];
-for(let oi=0;oi<OBN;oi++){const corners=patrolDefs[oi];let route=[];for(let j=0;j<corners.length;j++){const a=corners[j],b=corners[(j+1)%corners.length];let dx=Math.sign(b[0]-a[0]),dy=Math.sign(b[1]-a[1]);let x=a[0],y=a[1];while(x!==b[0]||y!==b[1]){const k=key(x,y);if(open[k])route.push(k);x+=dx;y+=dy;} }obs.push(route);}
-const obstacleAt=t=>obs.map((p,i)=>p[Math.floor((t+i*9)/2)%p.length]);
-function shortest(start,goal){let prev=new Int32Array(W*H).fill(-1),q=new Int32Array(W*H);let h=0,tail=0;q[tail++]=start;prev[start]=start;while(h<tail){let k=q[h++];if(k===goal)break;let [x,y]=xy(k);for(let [dx,dy] of dirs){let nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;let n=key(nx,ny);if(open[n]&&prev[n]<0){prev[n]=k;q[tail++]=n}}}if(prev[goal]<0)return null;let p=[goal];while(p[p.length-1]!==start)p.push(prev[p[p.length-1]]);return p.reverse()}
-const forbiddenObstacleCells=new Set(obs.flat());const chosen=[];let n=+document.getElementById('agents').value,tries=0;while(chosen.length<n&&tries<5000){tries++;let a=traversable[Math.floor(rng()*traversable.length)],b=traversable[Math.floor(rng()*traversable.length)];if(a===b||forbiddenObstacleCells.has(a)||forbiddenObstacleCells.has(b))continue;let p=shortest(a,b);if(!p||p.length<15||p.length>75)continue;if(chosen.some(v=>v.start===a||v.start===b||v.goal===a||v.goal===b))continue;chosen.push({start:a,goal:b,path:p,color:colors[chosen.length%colors.length]})}
-function contacts(pos,prev,obNow,obPrev){let ev=[];for(let i=0;i<pos.length;i++){if(pos[i]===null)continue;if(obNow.includes(pos[i]))ev.push({cell:pos[i],type:'moving obstacle',agents:[i]});if(prev&&obPrev&&prev[i]!==null){for(let j=0;j<obNow.length;j++)if(prev[i]===obNow[j]&&pos[i]===obPrev[j])ev.push({cell:pos[i],type:'obstacle edge swap',agents:[i]})}for(let j=i+1;j<pos.length;j++){if(pos[j]===null)continue;if(pos[i]===pos[j])ev.push({cell:pos[i],type:'agent collision',agents:[i,j]});else if(prev&&prev[i]!==null&&prev[j]!==null&&pos[i]===prev[j]&&pos[j]===prev[i])ev.push({cell:pos[i],type:'edge swap',agents:[i,j]})}}return ev}
-function simulate(chosen){
-// All agents physically occupy their distinct start pixels at t=0 in BOTH cases.
-// The right-hand simulation is a synchronous, conservative on-grid movement policy.
-// It preserves EXACT shortest routes and permits one-pixel waits; it never stages/spawns agents.
-const off=[],on=[],offContacts=[],onContacts=[],waitCount=[],doneCount=[],wflags=[];
-const schedule=chosen.map(a=>[a.start]);
-const progress=chosen.map(()=>0);
-const obAt=Array.from({length:T+2},(_,tt)=>obstacleAt(tt));
-let blockedAt=null,blockedReason='';
-// Controlled moving obstacles follow the same patrol cells but may pause to avoid
-// the agents already physically on the floor. This is coordinated fleet policy.
-const safeObFrames=[obAt[0].slice()];
-const obProgress=obs.map((route,i)=>Math.floor((0+i*9)/2)%route.length);
 
-// Some starts can coincide with obstacle patrol. Exclude such cells at agent selection.
-for(let t=0;t<T;t++){
- if(blockedAt!==null){for(let i=0;i<chosen.length;i++)schedule[i].push(schedule[i][t]);continue;}
- const current=chosen.map((a,i)=>a.path[progress[i]]);
- const occupiedNow=new Set(current);
- const currentObs=safeObFrames[t];
- const nextObstaclePos=obs.map((route,i)=>{
-   const proposed=obProgress[i]+((t+i*9+1)%2===0?1:0);
-   const tentative=route[proposed%route.length];
-   if(tentative!==currentObs[i]&&occupiedNow.has(tentative))return currentObs[i];
-   obProgress[i]=proposed%route.length;
-   return tentative;
- });
- safeObFrames.push(nextObstaclePos);
- const nextObs=new Set(nextObstaclePos), oldObs=new Set(currentObs);
- const choices=chosen.map((a,i)=>{
-  const idx=progress[i];
-  const next=idx+1<a.path.length?a.path[idx+1]:current[i];
-  const move=next!==current[i] && !nextObs.has(next)
-    && !currentObs.some((old,j)=>old===next&&nextObstaclePos[j]===current[i]);
-  return {next:move?next:current[i],move};
- });
- // Iteratively cancel moves that conflict with stationary traffic, simultaneous
- // same-cell entry, or opposite-direction edge swaps.
- // Rotating priority mitigates (but cannot eliminate) starvation.
- const priority=i=>(i-t%chosen.length+chosen.length)%chosen.length;
- let changed=true,loops=0;
- while(changed && loops++<chosen.length*3){
-  changed=false;
-  const destination=choices.map(v=>v.next);
-  const occupant=new Map(current.map((p,i)=>[p,i]));
-  for(let i=0;i<chosen.length;i++){
-   if(!choices[i].move)continue;
-   const j=occupant.get(destination[i]);
-   if(j!==undefined && j!==i){
-     if(!choices[j].move || destination[j]===current[i]){
-       choices[i]={next:current[i],move:false};changed=true;
-     }
+const W=92,H=58,C=14,MAX=220;let frame=0,timer=null,episodes=null,agents=[];
+const rdefs=[['SR-009','Operation-zone containment'],['SR-016','Static-obstacle clearance'],['SR-018','Passage-width admission'],['SR-024','Changed-map path invalidation'],['SR-042','Forklift crossing precedence'],['SR-012*','Handover exclusive access (proxy)']];
+document.getElementById('ruleList').innerHTML=rdefs.map(([id,name],i)=>`<label class="rule"><input class="rcheck" type="checkbox" value="${id}" ${[0,4,5].includes(i)?'checked':''}><span><strong>${id}</strong><br><small>${name}</small></span></label>`).join('');
+const $=id=>document.getElementById(id);
+const key=(x,y)=>y*W+x, xy=k=>[k%W,Math.floor(k/W)], inside=(x,y)=>x>=1&&x<W-1&&y>=1&&y<H-1;
+const dirs=[[1,0],[0,1],[-1,0],[0,-1]];
+const isBay=(x,y)=>x>=74&&x<=89&&y>=27&&y<=50;
+const isRobotZone=(x,y)=>x>=4&&x<=90&&y>=19&&y<=55;
+const rackRows=[7,13,19,25,31,37,43,49,55];
+const rackSegs=[[8,37],[41,68],[72,86]];
+const racks=[];
+for(const y of rackRows){
+  for(const [x1,x2] of rackSegs){
+    for(let x=x1;x<=x2;x++){
+      if(isBay(x,y)) continue;
+      if(y===25 && x>=73) continue;
+      if(y===31 && x>=73 && x<=76) continue;
+      if(y===37 && x>=83) continue;
+      racks.push([x,y]);
+    }
+  }
+}
+// Explicit demonstration chokepoints: a narrow aisle (1 cell), and a close-to-rack aisle (2 cells).
+// Long rack faces remain dense. These pockets are synthetic geometric test fixtures.
+for(let x=12;x<=33;x++){
+  if(x>=20&&x<=23){racks.push([x,34]);racks.push([x,36]);} // one-cell center lane
+  if(x>=26&&x<=30){racks.push([x,40]);racks.push([x,43]);} // two-cell lane
+}
+const blocked=new Set(racks.map(([x,y])=>key(x,y)));
+for(let x=0;x<W;x++){blocked.add(key(x,0));blocked.add(key(x,H-1));}
+for(let y=0;y<H;y++){blocked.add(key(0,y));blocked.add(key(W-1,y));}
+const robotMissions=[
+ [[12,22],[77,28]],[[14,28],[80,40]],[[12,34],[84,34]],[[18,40],[79,46]],
+ [[22,46],[80,30]],[[60,22],[16,34]],[[70,28],[22,46]],[[82,34],[28,28]],
+ [[78,46],[30,40]],[[60,52],[18,22]],[[34,22],[78,38]],[[38,46],[75,31]],
+ [[52,22],[84,46]],[[84,28],[36,34]],[[26,52],[82,52]],[[82,52],[26,52]]
+];
+const robotColors=['#39c9ff','#6af6d3','#6ea5ff','#a8e86a','#90dcff','#2abebf','#bb9cff','#82f5f1','#59d7ff','#9ae86d','#7db0ff','#64ddd1','#a2c4ff','#c8a7ff','#aaf7ff','#bdf26e'];
+const forkliftMissions=[[[38,53],[38,10]],[[67,53],[67,10]],[[87,53],[87,10]]];
+function makeAgents(){
+  const n=Math.max(1,Math.min(robotMissions.length,Number($('agentCount').value)||12));
+  const out=[];
+  for(let i=0;i<n;i++) out.push({id:'R'+String(i+1).padStart(2,'0'),kind:'R',start:robotMissions[i][0].slice(),goal:robotMissions[i][1].slice(),color:robotColors[i]});
+  forkliftMissions.forEach((m,i)=>out.push({id:'FL'+(i+1),kind:'FL',start:m[0].slice(),goal:m[1].slice(),color:'#fdd948'}));
+  return out;
+}
+function movable(t){return [[24+Math.floor(t/2)%12,34],[61-Math.floor(t/3)%12,43],[82,28+Math.floor(t/3)%14],[76+Math.floor(t/4)%8,36]].map(([x,y])=>[x,y]);}
+// Forklift footprint rotates: 2 columns × 3 rows for N/S;
+// 3 columns × 2 rows for E/W. Heading persists while waiting.
+function footprint(a,pos,heading='V'){
+  const [x,y]=pos;
+  if(a.kind!=='FL')return [[x,y]];
+  const result=[];
+  if(heading==='H'){for(let yy=y-1;yy<=y;yy++)for(let xx=x-1;xx<=x+1;xx++)result.push([xx,yy]);}
+  else {for(let yy=y-1;yy<=y+1;yy++)for(let xx=x-1;xx<=x;xx++)result.push([xx,yy]);}
+  return result;
+}
+function rectFor(a,pos,heading='V'){
+ const [x,y]=pos;
+ return a.kind==='FL' ? (heading==='H'?[x-1,y-1,3,2]:[x-1,y-1,2,3]):[x,y,1,1];
+}
+function headingFrom(a,b,previous='V'){return a[0]!==b[0]?'H':a[1]!==b[1]?'V':previous;}
+function samePos(a,b){return a[0]===b[0]&&a[1]===b[1];}
+function cellsOverlap(c1,c2){
+  const set=new Set(c1.map(([x,y])=>key(x,y)));
+  for(const c of c2) if(set.has(key(...c))) return c;
+  return null;
+}
+// Synthetic semantic/metric layers. Cell width is a scenario assumption, not a survey measurement.
+const GRID_METRES=0.5;
+const envelopeRadius=0.36, geometryMargin=0.20; // 0.56 m center clearance, 1.12 m passage width (assumed)
+function clearanceMeters(x,y){
+ let best=99;
+ for(let yy=Math.max(0,y-4);yy<=Math.min(H-1,y+4);yy++)for(let xx=Math.max(0,x-4);xx<=Math.min(W-1,x+4);xx++){
+  if(blocked.has(key(xx,yy))) best=Math.min(best,Math.hypot(xx-x,yy-y)*GRID_METRES);
+ }
+ return best===99?2.5:best;
+}
+function passageMeters(x,y){
+ let up=0,down=0,left=0,right=0;
+ while(up<12&&!blocked.has(key(x,y-up-1)))up++;
+ while(down<12&&!blocked.has(key(x,y+down+1)))down++;
+ while(left<12&&!blocked.has(key(x-left-1,y)))left++;
+ while(right<12&&!blocked.has(key(x+right+1,y)))right++;
+ return Math.min(up+down+1,left+right+1)*GRID_METRES;
+}
+const revisedMapCells=new Set([key(44,34),key(45,34),key(46,34)]);
+function mapChangeActive(t){return t>=27&&t<=36;}
+function handoverRequest(t){return t>=32&&t<=47;}
+function bayReleased(t){return t>=48;}
+const RULE_IDS=['SR-009','SR-016','SR-018','SR-024','SR-042','SR-012*'];
+function valid(x,y,a,rules,heading='V'){
+ const cells=footprint(a,[x,y],heading);
+ for(const [cx,cy] of cells){
+  if(!inside(cx,cy)||blocked.has(key(cx,cy)))return false;
+  if(a.kind==='R'&&rules.has('SR-009')&&!isRobotZone(cx,cy))return false;
+ }
+ if(a.kind==='R'&&rules.has('SR-016')&&clearanceMeters(x,y)<envelopeRadius+geometryMargin)return false;
+ if(a.kind==='R'&&rules.has('SR-018')&&passageMeters(x,y)<2*(envelopeRadius+geometryMargin))return false;
+ return true;
+}
+function bfs(a,from,goal,rules,extra){
+  const q=[key(...from)], prev=new Map([[q[0],-1]]); let head=0, to=key(...goal);
+  while(head<q.length){
+    const k=q[head++]; if(k===to) break; const [x,y]=xy(k);
+    for(const [dx,dy] of dirs){
+      const nx=x+dx, ny=y+dy, v=key(nx,ny);
+      if(!prev.has(v) && valid(nx,ny,a,rules) && (!extra || !extra.has(v))){ prev.set(v,k); q.push(v); }
+    }
+  }
+  if(!prev.has(to)) return null;
+  const out=[]; for(let k=to;k!==-1;k=prev.get(k)) out.push(xy(k));
+  return out.reverse();
+}
+function nearestLegal(point,a,rules){
+  if(valid(...point,a,rules)) return point;
+  for(let d=1;d<10;d++) for(let dx=-d;dx<=d;dx++) for(let dy=-d;dy<=d;dy++){
+    const p=[point[0]+dx,point[1]+dy]; if(valid(...p,a,rules)) return p;
+  }
+  return point;
+}
+function routeFor(a,rules){
+  const mode=$('complexity').value;
+  const direct=bfs(a,a.start,a.goal,rules,null);
+  if(!direct) return [a.start];
+  if(mode==='simple' && !(a.kind==='R' && [0,2,5,8].includes(agents.indexOf(a)) && !rules.has('SR-009'))) return direct;
+  const i=agents.indexOf(a), shift=i%4;
+  let marks=[];
+  if(a.kind==='FL'){
+    const x=a.start[0];
+    if(mode==='moderate'){
+      marks=[[x,46],[x+(shift%2?8:-8),46],[x+(shift%2?8:-8),24],[x,24]];
+    }else{
+      const bend=x>80?-10:(x>50?10:-10);
+      marks=[[x,50],[x+bend,50],[x+bend,38],[x-bend,38],[x-bend,21],[x,21]];
+    }
+  }else{
+    if(mode==='moderate'){
+      marks=[[Math.round((a.start[0]+a.goal[0])/2), a.start[1] < a.goal[1] ? a.start[1]+6 : a.start[1]-6],[Math.round((a.start[0]+a.goal[0])/2),a.goal[1]]];
+    }else{
+      const midx=Math.round((a.start[0]+a.goal[0])/2)+(shift<2?5:-5);
+      const midy=[24,30,36,42][shift];
+      marks=[[midx,midy],[a.goal[0]+(shift%2?4:-4),midy],[a.goal[0]+(shift%2?4:-4),a.goal[1]]];
+    }
+  }
+  // SR-009 scenario fixture: selected robots take a short but unauthorized exterior bypass.
+  // With SR-009, their route is screened and replanned wholly inside the red zone.
+  if(a.kind==='R' && [0,2,5,8].includes(i) && !rules.has('SR-009')){
+    const bypass=[a.start,[a.start[0],17],[a.goal[0],17],a.goal];
+    let candidate=[a.start],cur=a.start,validBypass=true;
+    for(const dest of bypass.slice(1)){
+      const part=bfs(a,cur,dest,rules,null);
+      if(!part){validBypass=false;break;}
+      candidate.push(...part.slice(1));cur=dest;
+    }
+    if(validBypass)return candidate;
+  }
+  const legalMarks=marks.map(p=>nearestLegal([Math.max(2,Math.min(W-3,p[0])),Math.max(2,Math.min(H-3,p[1]))],a,rules));
+  let all=[a.start], cur=a.start;
+  for(const point of [...legalMarks,a.goal]){
+    const part=bfs(a,cur,point,rules,null);
+    if(!part) return direct;
+    all.push(...part.slice(1)); cur=point;
+  }
+  return all;
+}
+
+function cumulativeCollisions(pos,prev,obstacles,heads,prevHeads){
+ const coll=[];
+ for(let i=0;i<pos.length;i++){
+  const c1=footprint(agents[i],pos[i],heads[i]);
+  for(let j=i+1;j<pos.length;j++){
+   const c2=footprint(agents[j],pos[j],heads[j]);
+   const overlap=cellsOverlap(c1,c2);
+   if(overlap) coll.push({ids:[agents[i].id,agents[j].id],x:overlap[0],y:overlap[1]});
+   else if(prev){
+    const p1=footprint(agents[i],prev[i],prevHeads[i]);
+    const p2=footprint(agents[j],prev[j],prevHeads[j]);
+    if(cellsOverlap(p1,c2)&&cellsOverlap(p2,c1))coll.push({ids:[agents[i].id,agents[j].id],x:pos[i][0],y:pos[i][1]});
    }
   }
-  // Multiple agents claiming the same next pixel: only best-priority mover continues.
-  const groups=new Map();
-  for(let i=0;i<chosen.length;i++){
-   const dest=choices[i].next;
-   if(!groups.has(dest))groups.set(dest,[]);
-   groups.get(dest).push(i);
-  }
-  for(const group of groups.values())if(group.length>1){
-    const winner=group.some(i=>!choices[i].move)?group.find(i=>!choices[i].move):group.reduce((a,b)=>priority(a)<=priority(b)?a:b);
-    for(const i of group)if(i!==winner&&choices[i].move){choices[i]={next:current[i],move:false};changed=true;}
-  }
+  for(const o of obstacles)if(cellsOverlap(c1,[o]))coll.push({ids:[agents[i].id,'moving obstacle'],x:o[0],y:o[1]});
  }
- const destinations=choices.map(v=>v.next);
- // If a predicted obstacle will occupy a pixel that cannot be vacated, refuse
- // to declare any further safe schedule. Preserve last VALID frame for inspection.
- const danger=destinations.findIndex((p,i)=>nextObs.has(p));
- const pairs=new Set();let invalid=false;
- for(let i=0;i<destinations.length;i++){
-  if(pairs.has(destinations[i]))invalid=true;
-  pairs.add(destinations[i]);
-  for(let j=i+1;j<destinations.length;j++)if(destinations[i]===current[j]&&destinations[j]===current[i]&&destinations[i]!==current[i])invalid=true;
- }
- if(danger!==-1 || invalid){
-  blockedAt=t;
-  blockedReason=danger!==-1?`Agent ${danger+1} cannot vacate a pixel before a moving obstacle arrives`:'No collision-free simultaneous move exists';
-  for(let i=0;i<chosen.length;i++)schedule[i].push(current[i]);
-  continue;
- }
- for(let i=0;i<chosen.length;i++){
-  if(choices[i].move)progress[i]++;
-  schedule[i].push(chosen[i].path[progress[i]]);
- }
+ return coll;
 }
-let totalWait=0,totalOff=0,totalOn=0;
-for(let t=0;t<=T;t++){
- const offPos=chosen.map(a=>a.path[Math.min(t,a.path.length-1)]);
- const onPos=chosen.map((a,i)=>schedule[i][t]);
- const prevOff=t?off[t-1]:null,prevOn=t?on[t-1]:null,prevObs=t?obstacleAt(t-1):null;
- let offEvents=contacts(offPos,prevOff,obstacleAt(t),prevObs);
- let onEvents=t>blockedAt && blockedAt!==null?[]:contacts(onPos,prevOn,safeObFrames[t],t?safeObFrames[t-1]:null);
- totalOff+=offEvents.length;totalOn+=onEvents.length;
- off.push(offPos);on.push(onPos);
- offContacts.push({events:offEvents,cumulative:totalOff});onContacts.push({events:onEvents,cumulative:totalOn});
- let flags=[];for(let i=0;i<chosen.length;i++){
-  let wait=t>0&&onPos[i]!==null&&prevOn[i]===onPos[i]&&onPos[i]!==chosen[i].goal;
-  flags.push(wait);if(wait)totalWait++;
+function blindEpisode(paths){
+ let loc=agents.map(a=>a.start.slice()), heads=agents.map(()=>'V'),progress=agents.map(()=>0),state=[],finish=null,cumulative=0;
+ for(let t=0;t<=MAX;t++){
+  const pos=loc.map(p=>p.slice());const prev=t?state[t-1]:null;
+  const coll=cumulativeCollisions(pos,prev?.pos,movable(t),heads,prev?.head);
+  cumulative+=coll.length;
+  state.push({pos,head:heads.slice(),obs:movable(t),coll,cum:cumulative,decisions:agents.map((a,i)=>t?'MOVING':'START'),ev:[],tags:agents.map(()=>[])});
+  if(finish===null&&loc.every((p,i)=>samePos(p,agents[i].goal)))finish=t;
+  if(t===MAX)break;
+  loc=loc.map((p,i)=>paths[i][Math.min(++progress[i],paths[i].length-1)]?.slice()||p);
+  heads=heads.map((h,i)=>headingFrom(pos[i],loc[i],h));
  }
- wflags.push(flags);waitCount.push(totalWait);
- doneCount.push(onPos.filter((v,i)=>v!==null&&v===chosen[i].goal).length);
+ return {state,finish,paths,selected:new Set()};
 }
- const finishOff=chosen.length?Math.max(...chosen.map(a=>a.path.length-1)):0;
- const allFinished=blockedAt===null&&chosen.every((a,i)=>schedule[i][T]===a.goal);
- const finishOn=allFinished?on.findIndex(positions=>positions.every((pos,i)=>pos===chosen[i].goal)):null;
- return {open,agents:chosen,obs,obstacleAt,off,on,offContacts,onContacts,wflags,waitCount,doneCount,finishOff,finishOn,blockedAt,blockedReason,safeObstacleAt:t=>safeObFrames[t],progress:progress.slice()};}
+// Reservation table holds footprints of previously scheduled agents for each time,
+// including their goals after arrival. This avoids cyclic hold-and-wait gridlocks.
+// Safety robots may STEP ASIDE / BACKTRACK (rather than only freeze) to clear FL.
+function planActor(idx,reservations,baseline,selected){
+ const a=agents[idx],start=a.start,goal=a.goal;
+ const preferred=new Set(baseline.map(p=>key(...p)));
+ const heap=[]; let serial=0;
+ function push(node){heap.push(node);let j=heap.length-1;while(j>0){let p=(j-1)>>1;if(heap[p].f<=node.f)break;heap[j]=heap[p];j=p;}heap[j]=node;}
+ function pop(){const ret=heap[0],last=heap.pop();if(heap.length){let i=0;while(true){let ch=i*2+1;if(ch>=heap.length)break;if(ch+1<heap.length&&heap[ch+1].f<heap[ch].f)ch++;if(last.f<=heap[ch].f)break;heap[i]=heap[ch];i=ch;}heap[i]=last;}return ret;}
+ function heur(x,y){return Math.abs(x-goal[0])+Math.abs(y-goal[1]);}
+ const initial={x:start[0],y:start[1],t:0,heading:'V',g:0,parent:null,f:heur(...start)};
+ push(initial);const seen=new Map();let expansions=0;
+ const k=(x,y,t,h)=>(((t*H+y)*W+x)*2+(h==='H'?1:0));
+ while(heap.length&&expansions<230000){
+  const n=pop();const code=k(n.x,n.y,n.t,n.heading);
+  if(seen.has(code)&&seen.get(code)<n.g-1e-8)continue;
+  expansions++;
+  if(n.x===goal[0]&&n.y===goal[1]){
+   const path=[];let cur=n;while(cur){path.push({pos:[cur.x,cur.y],heading:cur.heading});cur=cur.parent;}
+   path.reverse();return path;
+  }
+  if(n.t>=MAX)continue;
+  // Waiting first is legal. A robot may also reverse or sidestep into adjacent aisle.
+  const actions=[[0,0],...dirs];
+  for(const [dx,dy] of actions){
+   const nx=n.x+dx,ny=n.y+dy,nt=n.t+1;
+   const nh= a.kind==='FL' ? (dx!==0?'H':dy!==0?'V':n.heading) : 'V';
+   if(!valid(nx,ny,a,selected,nh))continue;
+   if(a.kind==='R'&&selected.has('SR-024')&&mapChangeActive(nt)&&footprint(a,[nx,ny],nh).some(([cx,cy])=>revisedMapCells.has(key(cx,cy))))continue;
+   const cells=footprint(a,[nx,ny],nh), old=footprint(a,[n.x,n.y],n.heading);
+   // SR-012* (simplified proxy): disallow robot entry into handover bay while a forklift
+   // has an overlapping handover reservation, and vice versa. Forklift is NOT an EJ.
+   if(selected.has('SR-012*')&&cells.some(([cx,cy])=>isBay(cx,cy))){
+     const conflictingBay=(reservations[nt]||[]).some(r=>r.kind!==a.kind && r.cells.some(([cx,cy])=>isBay(cx,cy)));
+     if(conflictingBay)continue;
+   }
+   const obs=movable(nt);if(selected.has('SR-042')&&cellsOverlap(cells,obs))continue;
+   // Avoid moving obstacle swapping into the current footprint.
+   const oldObs=movable(n.t);if(selected.has('SR-042')&&cellsOverlap(old,obs)&&cellsOverlap(cells,oldObs))continue;
+   const reserved=(selected.has('SR-042')||selected.has('SR-012*'))?(reservations[nt]||[]):[];let unsafe=false;
+   for(const r of reserved){
+    if(cellsOverlap(cells,r.cells)||(cellsOverlap(old,r.cells)&&cellsOverlap(cells,r.prev))){unsafe=true;break;}
+   }
+   if(unsafe)continue;
+   // Robots avoid handover crowding through shared footprint reservations.
+   // Prefer previously calculated routes but permit step aside to clear a forklift.
+   const offPath=preferred.has(key(nx,ny))?0:(a.kind==='FL'?1.0:.6);
+   const waitCost= dx===0&&dy===0?.012:0;
+   const ng=n.g+1+offPath+waitCost;
+   const nk=k(nx,ny,nt,nh);
+   if(ng>= (seen.get(nk)??Infinity)-1e-8)continue;
+   seen.set(nk,ng);
+   push({x:nx,y:ny,t:nt,heading:nh,g:ng,parent:n,f:ng+heur(nx,ny)+serial++*1e-10});
+  }
+ }
+ return null;
+}
+function safeEpisode(selected,paths){
+ // Forklifts are the highest-priority traffic participants.
+ const order=agents.map((a,i)=>({a,i})).sort((u,v)=>(u.a.kind==='FL'?0:1)-(v.a.kind==='FL'?0:1)).map(z=>z.i);
+ const reservations=Array.from({length:MAX+1},()=>[]);
+ const schedules=Array(agents.length).fill(null);
+ const failed=[];
+ for(const idx of order){
+  const path=planActor(idx,reservations,paths[idx],selected);
+  if(!path){failed.push(agents[idx].id);continue;}
+  schedules[idx]=path;
+  for(let t=0;t<=MAX;t++){
+   const current=path[Math.min(t,path.length-1)];
+   const previous=path[Math.min(Math.max(0,t-1),path.length-1)];
+   reservations[t].push({kind:agents[idx].kind,cells:footprint(agents[idx],current.pos,current.heading),prev:footprint(agents[idx],previous.pos,previous.heading)});
+  }
+ }
+ const state=[];let cumulative=0,finish=failed.length?null:Math.max(...schedules.map(s=>s.length-1));
+ for(let t=0;t<=MAX;t++){
+  const pos=agents.map((a,i)=>schedules[i]?.[Math.min(t,schedules[i].length-1)].pos.slice()??a.start.slice());
+  const head=agents.map((a,i)=>schedules[i]?.[Math.min(t,schedules[i].length-1)].heading??'V');
+  const prev=t?state[t-1]:null;
+  const coll=cumulativeCollisions(pos,prev?.pos,movable(t),head,prev?.head); cumulative+=coll.length;
+  const decisions=agents.map((a,i)=>{
+   const path=schedules[i];if(!path)return 'UNSCHEDULED';
+   if(t===0)return 'START';if(t>=path.length)return 'GOAL';
+   const p=path[t].pos,last=path[t-1].pos;
+   if(samePos(p,last))return selected.has('SR-042')?'WAIT · SR-042 traffic':selected.has('SR-024')?'WAIT · SR-024 map update':'WAIT';
+   const base=paths[i].some(q=>samePos(q,p));
+   if(!base&&a.kind==='R')return selected.has('SR-042')?'YIELD / STEP ASIDE · SR-042':selected.has('SR-024')?'REPLAN · SR-024':'DETOUR';
+   return a.kind==='FL'?'MOVE · planned vehicle route':selected.has('SR-042')?'MOVE · reserved slot':'MOVE · map-valid';
+  });
+  const ev=decisions.map((d,i)=>d.includes('WAIT')||d.includes('STEP ASIDE')?agents[i].id+' '+d:null).filter(Boolean);
+  const tags=agents.map((a,i)=>{
+    if(a.kind!=='R'||t===0)return [];
+    const result=[];const p=pos[i],prevP=prev?.pos[i]||p;
+    const baseline=paths[i],baselineAt=baseline[Math.min(t,baseline.length-1)]||p;
+    const modified=!samePos(p,baselineAt);
+    if(selected.has('SR-009') && [0,2,5,8].includes(i) && modified && (baseline.some(q=>!isRobotZone(...q))))result.push('SR-009');
+    if(selected.has('SR-016') && modified && baseline.some(q=>clearanceMeters(...q)<envelopeRadius+geometryMargin))result.push('SR-016');
+    if(selected.has('SR-018') && modified && baseline.some(q=>passageMeters(...q)<2*(envelopeRadius+geometryMargin)))result.push('SR-018');
+    if(selected.has('SR-024') && mapChangeActive(t) && modified)result.push('SR-024');
+    if(selected.has('SR-042') && (decisions[i].includes('WAIT')||decisions[i].includes('STEP ASIDE')||decisions[i].includes('YIELD')))result.push('SR-042');
+    if(selected.has('SR-012*') && isBay(...p) && agents.some((f,j)=>f.kind==='FL'&&isBay(...pos[j])))result.push('SR-012*');
+    return result;
+  });
+  tags.forEach((ids,i)=>ids.forEach(id=>ev.push(agents[i].id+' '+id+': active restriction')));
+  state.push({pos,head,obs:movable(t),coll,cum:cumulative,decisions,ev,tags});
+ }
+ return {state,finish,paths:schedules.map((sc,i)=>sc?sc.map(q=>q.pos):paths[i]),selected,failed};
+}
+function simulate(selected){
+ const paths=agents.map(a=>routeFor(a,selected));
+ if(selected.has('SR-042')||selected.has('SR-024')||selected.has('SR-012*'))return safeEpisode(selected,paths);
+ const ep=blindEpisode(paths);ep.selected=selected;return ep;
+}
+function selection(){ return new Set([...document.querySelectorAll('.rcheck:checked')].map(x=>x.value)); }
+function build(){ agents=makeAgents(); const selected=selection(); episodes={a:simulate(new Set()), b:simulate(selected)}; const hasNoPath=agents.some((a,i)=>episodes.b.paths[i].length===1&&!samePos(a.start,a.goal)); $('warn').textContent=hasNoPath?'Some selected rules have no feasible route.':'Same start/goal missions; forklifts have priority. Robots can wait, sidestep or backtrack to clear shared routes.'; $('safetyStatus').textContent=episodes.b.failed?.length?'Unscheduled agents: '+episodes.b.failed.join(', ')+' · increase clearance or reduce agents.':'All '+agents.length+' agents scheduled; safe-plan completion '+(episodes.b.finish??'N/A')+' steps.';paint(); }
+function at(ep,t){ return ep.state[Math.min(t,ep.state.length-1)]; }
+function missionDone(ep,t){ return at(ep,t).pos.filter((p,i)=>samePos(p,agents[i].goal)).length; }
+function score(ep,t){ const p=Number($('points').value)||0, sc=Number($('stepCost').value)||0, pen=Number($('penalty').value)||0; const lim=Math.min(t,ep.finish===null?MAX:ep.finish); const s=at(ep,lim); return p-sc*lim-pen*s.cum; }
+function drawGlowRect(ctx,rect,color,pulse,strong){
+  const [x,y,w,h]=rect; ctx.save();
+  ctx.globalAlpha=strong ? (.26+.42*pulse) : .17; ctx.fillStyle=color; ctx.fillRect(x+.08,y+.08,w-.16,h-.16);
+  ctx.globalAlpha=strong ? (.45+.45*pulse) : .20; ctx.strokeStyle=strong ? '#ffffff' : color; ctx.lineWidth=strong ? (.12+.12*pulse) : .11; ctx.strokeRect(x+.06,y+.06,w-.12,h-.12);
+  if(strong){ ctx.globalAlpha=.30+.40*pulse; ctx.strokeStyle=color; ctx.lineWidth=.12+.09*pulse; ctx.strokeRect(x+.01,y+.01,w-.02,h-.02); }
+  ctx.restore();
+}
+function drawMap(canvas,ep,t){
+  const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height; ctx.clearRect(0,0,w,h); const s=at(ep,t); ctx.fillStyle='#394552'; ctx.fillRect(0,0,w,h); ctx.save(); ctx.scale(C,C); ctx.fillStyle='#454f58'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(168,193,210,.085)'; ctx.lineWidth=.045; for(let x=0;x<=W;x++){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();} for(let y=0;y<=H;y++){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.strokeStyle='#ffe528'; ctx.lineWidth=.17; ctx.strokeRect(1.5,1.5,89,54); ctx.strokeStyle='#ff5867'; ctx.strokeRect(4,19,86,36); ctx.strokeStyle='#b884f5'; ctx.strokeRect(74,27,15,23);
+  for(const [x,y] of racks){ctx.fillStyle='#b39b78';ctx.fillRect(x+.07,y+.12,.86,.78);ctx.strokeStyle='#302b27';ctx.lineWidth=.10;ctx.strokeRect(x+.07,y+.12,.86,.78);ctx.fillStyle='#657688';ctx.fillRect(x+.2,y+.25,.23,.2);ctx.fillRect(x+.56,y+.25,.23,.2);ctx.fillRect(x+.2,y+.50,.23,.19);ctx.fillRect(x+.56,y+.50,.23,.19);}
+  for(const [bx,by,bw,bh] of [[77,32,9,3],[81,41,4,6]]){ctx.fillStyle='#0b0e10';ctx.fillRect(bx,by,bw,bh);ctx.save();ctx.beginPath();ctx.rect(bx,by,bw,bh);ctx.clip();ctx.strokeStyle='#ffdc13';ctx.lineWidth=.3;for(let q=-bh;q<bw+bh;q+=.7){ctx.beginPath();ctx.moveTo(bx+q,by+bh);ctx.lineTo(bx+q+bh,by);ctx.stroke();}ctx.restore();ctx.strokeStyle='#ffe529';ctx.lineWidth=.13;ctx.strokeRect(bx,by,bw,bh);}
+  // Rack-facing pick/drop locations show the business task rather than a generic maze.
+  agents.forEach((a,i)=>{
+   const [sx,sy]=a.start, [gx,gy]=a.goal;
+   for(const [x,y,c,mark] of [[sx,sy,'#70def9','P'],[gx,gy,'#68e7ac','D']]){
+     if(a.kind==='FL')continue;
+     ctx.fillStyle='#0c2732';ctx.strokeStyle=c;ctx.lineWidth=.12;
+     ctx.fillRect(x+.22,y+.22,.56,.56);ctx.strokeRect(x+.22,y+.22,.56,.56);
+     ctx.fillStyle=c;ctx.font='bold .35px Arial';ctx.textAlign='center';ctx.fillText(mark,x+.5,y+.64);
+   }
+  });
+  // Independent map-change layer. SR-024 excludes the changed cells only when enabled.
+  if(mapChangeActive(t)){
+    ctx.fillStyle='rgba(255,123,71,.52)';
+    for(const cell of revisedMapCells){const [cx,cy]=xy(cell);ctx.fillRect(cx+.08,cy+.08,.84,.84);}
+    ctx.font='bold .7px Arial';ctx.fillStyle='#ffd3a3';ctx.fillText('MAP UPDATE',42,33.7);
+  }
+  // SR-012* is a virtual electric-jack admission request, not an EJ agent.
+  if(handoverRequest(t)){
+    const denied=ep.selected.has('SR-012*');
+    ctx.fillStyle=denied?'#58e8b2':'#ff9a72';
+    ctx.font='bold .75px Arial';ctx.fillText(denied?'EJ REQUEST: DENIED':'EJ REQUEST: UNCONTROLLED',74.5,26.5);
+    ctx.strokeStyle=denied?'#58e8b2':'#ff8a72';ctx.lineWidth=.24;ctx.strokeRect(74,27,15,23);
+  }
+  agents.forEach((a,i)=>{const path=ep.paths[i]; if(path.length<=1) return; ctx.beginPath(); path.forEach(([x,y],j)=>{ if(j===0) ctx.moveTo(x+.5,y+.5); else ctx.lineTo(x+.5,y+.5); }); ctx.strokeStyle=a.kind==='FL'?'rgba(255,218,59,.32)':a.color+'55'; ctx.lineWidth=.16; ctx.stroke();});
+  // Persistent start and goal annotations for every actor, including forklifts.
+  // They remain fixed to their mission's original cells as the agents move.
+  agents.forEach((a,i)=>{
+    const [sx,sy]=a.start, [gx,gy]=a.goal;
+    ctx.save();
+    // Start: outlined circle plus center dot. Draw with agent-color rim.
+    ctx.beginPath();ctx.arc(sx+.5,sy+.5,.37,0,Math.PI*2);
+    ctx.fillStyle='rgba(12,23,34,.88)';ctx.fill();
+    ctx.strokeStyle='#f5ffff';ctx.lineWidth=.115;ctx.stroke();
+    ctx.beginPath();ctx.arc(sx+.5,sy+.5,.12,0,Math.PI*2);
+    ctx.fillStyle=a.color;ctx.fill();
+    // Goal: five-pointed star, centered on the actual goal cell.
+    const cx=gx+.5,cy=gy+.5;
+    ctx.beginPath();
+    for(let k=0;k<10;k++){
+      const theta=-Math.PI/2+k*Math.PI/5;
+      const radius=k%2===0?.52:.22;
+      const xx=cx+Math.cos(theta)*radius, yy=cy+Math.sin(theta)*radius;
+      if(k===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);
+    }
+    ctx.closePath();ctx.fillStyle='#fff6a5';ctx.fill();
+    ctx.strokeStyle='#162534';ctx.lineWidth=.10;ctx.stroke();
+    ctx.restore();
+  });
+  const prevState=at(ep,Math.max(0,t-1)); const prev=prevState.pos; const pulse=(1+Math.sin(performance.now()*0.009))/2;
+  s.pos.forEach((p,i)=>{ const a=agents[i], rp=rectFor(a,p,s.head[i]), moved=t>0 && !samePos(prev[i],p); if(moved) drawGlowRect(ctx,rectFor(a,prev[i],prevState.head[i]),a.kind==='FL'?'#ffdc4d':a.color,pulse,false); drawGlowRect(ctx,rp,a.kind==='FL'?'#ffdc4d':a.color,pulse,true); });
+  s.obs.forEach(([x,y])=>{ctx.beginPath();ctx.moveTo(x+.5,y+.06);ctx.lineTo(x+.08,y+.9);ctx.lineTo(x+.92,y+.9);ctx.closePath();ctx.fillStyle='#ffeb39';ctx.fill();ctx.lineWidth=.14;ctx.strokeStyle='#ff4848';ctx.stroke();});
+  s.pos.forEach((p,i)=>{const a=agents[i]; if(a.kind==='FL'){ const [x,y]=p; ctx.fillStyle='#ffda45'; const [rx,ry,rw,rh]=rectFor(a,p,s.head[i]);ctx.fillRect(rx+.05,ry+.05,rw-.1,rh-.1);ctx.strokeStyle='#151b23';ctx.lineWidth=.12;ctx.strokeRect(rx+.05,ry+.05,rw-.1,rh-.1); ctx.fillStyle='#131f29'; ctx.font='bold .42px Arial'; ctx.textAlign='center'; ctx.fillText(a.id,x-.02,y+.54);} else { const [x,y]=p; ctx.beginPath(); ctx.arc(x+.5,y+.5,.40,0,Math.PI*2); ctx.fillStyle=a.color; ctx.fill(); ctx.strokeStyle='#132a37'; ctx.lineWidth=.12; ctx.stroke(); ctx.font='bold .48px Arial'; ctx.textAlign='center'; ctx.fillStyle='#072437'; ctx.fillText(String(i+1),x+.5,y+.67);} });
+  // Completed agents flash RED continuously, including while paused or seeking.
+  // Completion is checked against each agent's actual goal on the selected frame.
+  const arrivalPulse=(1+Math.sin(performance.now()*.012))/2;
+  s.pos.forEach((p,i)=>{
+    const a=agents[i];if(!samePos(p,a.goal))return;
+    const [rx,ry,rw,rh]=rectFor(a,p,s.head[i]);
+    ctx.save();
+    ctx.shadowColor='#ff203b';ctx.shadowBlur=.38+1.0*arrivalPulse;
+    ctx.fillStyle='rgba(255,28,45,'+(.16+.45*arrivalPulse)+')';
+    ctx.fillRect(rx+.05,ry+.05,rw-.10,rh-.10);
+    ctx.strokeStyle='#ff304d';ctx.lineWidth=.18+.19*arrivalPulse;
+    ctx.strokeRect(rx-.06,ry-.06,rw+.12,rh+.12);
+    if(a.kind==='R'){
+      ctx.beginPath();ctx.arc(p[0]+.5,p[1]+.5,.46+.09*arrivalPulse,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,45,60,'+(.55+.45*arrivalPulse)+')';ctx.lineWidth=.15;ctx.stroke();
+    }
+    ctx.restore();
+  });
+  // Render compact goal stars a second time on top of arrived actor symbols,
+  // offset slightly to avoid obscuring the agent number.
+  s.pos.forEach((p,i)=>{
+    if(!samePos(p,agents[i].goal))return;
+    const [gx,gy]=agents[i].goal;const cx=gx+.92,cy=gy+.03;
+    ctx.save();ctx.beginPath();
+    for(let k=0;k<10;k++){
+      const ang=-Math.PI/2+k*Math.PI/5,r=k%2===0?.28:.12;
+      if(k===0)ctx.moveTo(cx+Math.cos(ang)*r,cy+Math.sin(ang)*r);
+      else ctx.lineTo(cx+Math.cos(ang)*r,cy+Math.sin(ang)*r);
+    }
+    ctx.closePath();ctx.fillStyle='#ffe769';ctx.fill();ctx.strokeStyle='#253343';ctx.lineWidth=.08;ctx.stroke();ctx.restore();
+  });
+  // Frame-accurate agent rule badges: visible only while the modeled trigger remains active.
+  (s.tags||[]).forEach((ids,i)=>{
+    if(!ids.length)return;
+    const [ax,ay]=s.pos[i];
+    ids.slice(0,2).forEach((id,j)=>{
+      const x=Math.min(W-8,ax+1.0),y=Math.max(1,ay-1.1-j*1.15);
+      ctx.fillStyle='#112d3a';ctx.strokeStyle='#6df3df';ctx.lineWidth=.12;
+      ctx.fillRect(x,y,6.8,1.04);ctx.strokeRect(x,y,6.8,1.04);
+      ctx.fillStyle='#b4fff1';ctx.textAlign='left';ctx.font='bold .73px Arial';ctx.fillText(id,x+.35,y+.76);
+    });
+  });
+  s.coll.forEach(({x,y})=>{ctx.font='2px Arial';ctx.textAlign='center';ctx.fillText('💥',x+.5,y-.18);ctx.lineWidth=.2;ctx.strokeStyle='#ee8d92';ctx.strokeRect(x-.2,y-.2,1.4,1.4);});
+  ctx.restore();
+}
+function chartPrep(canvas){ let rect=canvas.getBoundingClientRect(), dpr=devicePixelRatio||1; canvas.width=Math.max(400,Math.round(rect.width*dpr)); canvas.height=Math.round(265*dpr); let ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return {ctx,w:canvas.width/dpr,h:canvas.height/dpr}; }
+function charts(){
+  const ea=episodes.a, eb=episodes.b, tt=frame, p=Number($('points').value)||0; let {ctx,w,h}=chartPrep($('line')); const left=50,right=20,top=18,bottom=34,plotW=w-left-right,plotH=h-top-bottom;
+  const vals=[]; for(let t=0;t<=tt;t++) vals.push(score(ea,t),score(eb,t)); let min=Math.min(...vals,p),max=Math.max(...vals,p); let pad=Math.max(20,(max-min)*.22); min-=pad; max+=pad;
+  const xx=t=>left+(t/MAX)*plotW, yy=v=>top+(max-v)/(max-min)*plotH; ctx.clearRect(0,0,w,h); ctx.font='12px Segoe UI,Arial'; ctx.textAlign='right'; ctx.fillStyle='#a9bdcf'; ctx.strokeStyle='#344c5f';
+  for(let i=0;i<5;i++){let y=top+i*plotH/4; ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(left+plotW,y); ctx.stroke(); ctx.fillText(Math.round(max-i*(max-min)/4),left-9,y+4);} ctx.textAlign='center'; for(let t=0;t<=MAX;t+=20) ctx.fillText(t,xx(t),h-11);
+  [[ea,'#ff9182'],[eb,'#43d9bc']].forEach(([ep,color])=>{ctx.beginPath(); for(let t=0;t<=tt;t++){let x=xx(t), y=yy(score(ep,t)); if(t===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.lineWidth=3; ctx.strokeStyle=color; ctx.stroke(); ctx.fillStyle=color; ctx.beginPath(); ctx.arc(xx(tt),yy(score(ep,tt)),4.5,0,Math.PI*2); ctx.fill();}); ctx.setLineDash([5,5]); ctx.strokeStyle='#f0f5ff'; ctx.beginPath(); ctx.moveTo(xx(tt),top); ctx.lineTo(xx(tt),h-bottom); ctx.stroke(); ctx.setLineDash([]);
+  const bar=chartPrep($('bar')); ctx=bar.ctx; w=bar.w; h=bar.h; ctx.clearRect(0,0,w,h); const a=p-score(ea,tt), b=p-score(eb,tt), mx=Math.max(10,a,b)*1.12, area=h-58;
+  [[a,'#ff9182','WITHOUT'],[b,'#43d9bc','WITH']].forEach(([v,color,l],i)=>{let x=w*(i===0?.26:.72), bh=Math.max(1,(v/mx)*area); ctx.fillStyle=color; ctx.fillRect(x-58,28+area-bh,116,bh); ctx.fillStyle='#f1f7ff'; ctx.textAlign='center'; ctx.font='bold 18px Segoe UI,Arial'; ctx.fillText(Math.round(v),x,Math.max(22,20+area-bh)); ctx.font='bold 12px Segoe UI,Arial'; ctx.fillText(l,x,h-12);});
+}
+function evaluateRules(ep,t){
+ const stats=Object.fromEntries(RULE_IDS.map(id=>[id,{viol:0,actions:0,status:'N/A'}]));
+ const enabled=ep.selected||new Set();
+ const upto=Math.min(t,MAX);
+ for(let tt=0;tt<=upto;tt++){
+  const st=at(ep,tt),prev=at(ep,Math.max(0,tt-1));
+  for(let i=0;i<agents.length;i++){
+   const a=agents[i],p=st.pos[i];if(a.kind!=='R')continue;
+   if(!isRobotZone(...p))stats['SR-009'].viol++;
+   if(clearanceMeters(...p)<envelopeRadius+geometryMargin)stats['SR-016'].viol++;
+   if(passageMeters(...p)<2*(envelopeRadius+geometryMargin))stats['SR-018'].viol++;
+   if(mapChangeActive(tt)&&revisedMapCells.has(key(...p)))stats['SR-024'].viol++;
+   const rob=footprint(a,p,'V');
+   if(agents.some((f,j)=>f.kind==='FL'&&cellsOverlap(rob,footprint(f,st.pos[j],st.head[j]))))stats['SR-042'].viol++;
+   if(tt>0&&enabled.has('SR-042')&&st.decisions[i]?.includes('SR-042'))stats['SR-042'].actions++;
+   if(tt>0&&enabled.has('SR-024')&&st.decisions[i]?.includes('SR-024'))stats['SR-024'].actions++;
+  }
+  if(handoverRequest(tt)&&!bayReleased(tt)){
+    if(enabled.has('SR-012*'))stats['SR-012*'].actions++;
+    else stats['SR-012*'].viol++;
+  }
+ }
+ // Counterfactual path screening: blocked candidate cells are recorded as rejected, not traveled violations.
+ if(enabled.has('SR-009')||enabled.has('SR-016')||enabled.has('SR-018')){
+  const baseline=episodes?.a;
+  if(baseline && ep!==baseline){
+   for(const id of ['SR-009','SR-016','SR-018'])if(enabled.has(id)){
+    stats[id].actions=agents.filter(a=>a.kind==='R').reduce((sum,a)=>{
+      const original=routeFor(a,new Set());
+      return sum+original.filter(([x,y])=>id==='SR-009'?!isRobotZone(x,y):id==='SR-016'?clearanceMeters(x,y)<envelopeRadius+geometryMargin:passageMeters(x,y)<2*(envelopeRadius+geometryMargin)).length;
+    },0);
+   }
+  }
+ }
+ for(const id of RULE_IDS)stats[id].status=enabled.has(id)?(stats[id].viol?'FAIL':'PASS'):'OFF';
+ return stats;
+}
+function renderRuleDashboard(){
+ const stats=evaluateRules(episodes.b,frame), baseline=evaluateRules(episodes.a,frame);
+ $('ruleDashboard').innerHTML=RULE_IDS.map((id,i)=>{
+  const v=stats[id],bv=baseline[id],title=rdefs[i][1];
+  const qualifier=id==='SR-012*'?'Virtual EJ request only':id==='SR-024'?'Synthetic occupancy change at step 27':'Grid-based proxy';
+  return `<div class="rulebox"><strong>${id} · ${title}</strong><div class="rv ${v.status==='PASS'?'good':v.status==='FAIL'?'bad':''}">${v.status}</div><p>Baseline violations: ${bv.viol} · Selected violations: ${v.viol}</p><p>Prevented / reroute indicators: ${v.actions}</p><p>${qualifier}</p></div>`;
+ }).join('');
+}
+function paint(){
+  if(!episodes) return; frame=Number($('time').value); $('timeLabel').textContent=frame+' / '+MAX; drawMap($('mapA'),episodes.a,frame); drawMap($('mapB'),episodes.b,frame);
+  for(const [letter,ep] of [['A',episodes.a],['B',episodes.b]]){ const s=at(ep,frame); $('coll'+letter).textContent=s.cum; $('score'+letter).textContent=score(ep,frame).toLocaleString(); $('done'+letter).textContent=missionDone(ep,frame)+'/'+agents.length; $('finish'+letter).textContent=ep.finish===null?'Not reached':ep.finish+' steps'; }
+  const ev=at(episodes.b,frame); const virtualEvents=[];if(frame===27)virtualEvents.push('SR-024: environment occupancy changed; path must be rechecked');if(frame===32)virtualEvents.push(episodes.b.selected.has('SR-012*')?'SR-012*: virtual EJ bay admission WITHHELD pending clearance':'SR-012* OFF: virtual EJ request not controlled');if(frame===48)virtualEvents.push('SR-012*: bay release condition assumed complete (synthetic)'); $('events').innerHTML=(ev.ev.length||virtualEvents.length?[...virtualEvents,...ev.ev].map(v=>'• '+v).join('<br>'):'No rule-triggered action recorded this step.')+'<br><span style="color:#9fb7c8">Selected: '+[...episodes.b.selected].join(', ')+'</span>';
+  renderRuleDashboard();
+  $('inspector').innerHTML='<table><thead><tr><th>Agent</th><th>Cell (x,y)</th><th>Current action</th></tr></thead><tbody>'+agents.map((a,i)=>`<tr><td style="color:${a.color}">${a.id}</td><td>${ev.pos[i].join(', ')}</td><td>${ev.decisions[i]||'—'} ${(ev.tags?.[i]||[]).join(' / ')}</td></tr>`).join('')+'</tbody></table>'; charts();
+}
+let playing=false; function pause(){playing=false; $('play').textContent='▶ Play'; if(timer){clearInterval(timer); timer=null;}} function step(){if(frame>=MAX){pause(); return;} $('time').value=++frame; paint();}
+$('play').onclick=()=>{if(playing){pause(); return;} playing=true; $('play').textContent='⏸ Pause'; let ms=700/Number($('speed').value); timer=setInterval(step,ms);}; $('prev').onclick=()=>{pause(); $('time').value=Math.max(0,frame-1); paint();}; $('next').onclick=()=>{pause(); $('time').value=Math.min(MAX,frame+1); paint();}; $('reset').onclick=()=>{pause(); $('time').value=0; paint();}; $('time').oninput=()=>{pause(); paint();}; $('speed').onchange=()=>{if(playing){pause(); $('play').click();}}; document.querySelectorAll('.rcheck').forEach(x=>x.onchange=()=>{pause(); build();}); $('complexity').onchange=()=>{pause(); $('time').value=0; frame=0; build();}; $('agentCount').onchange=()=>{pause(); $('time').value=0; frame=0; build();}; ['points','stepCost','penalty'].forEach(id=>$(id).oninput=paint); window.addEventListener('resize',()=>{if(episodes) charts();}); build();
+let lastTrackerPaint=0; function trackerAnimation(now){ if(episodes && now-lastTrackerPaint>=45){ drawMap($('mapA'),episodes.a,frame); drawMap($('mapB'),episodes.b,frame); lastTrackerPaint=now; } requestAnimationFrame(trackerAnimation);} requestAnimationFrame(trackerAnimation);
 
-// Retain the original seeded maze, patrol tracks, and every selected agent's original shortest path.
-// Build the largest collision-free *finishing* subset found by greedy addition.
-// Excluded agents are reported honestly rather than re-routed or staged.
-let best=null;
-for(let pass=0;pass<5;pass++){
-  const order=chosen.map((_,i)=>i);
-  if(pass===0)order.sort((a,b)=>chosen[a].path.length-chosen[b].path.length);
-  else if(pass===1)order.sort((a,b)=>chosen[b].path.length-chosen[a].path.length);
-  else if(pass===2)order.sort((a,b)=>a-b);
-  else if(pass===3)order.sort((a,b)=>b-a);
-  else order.sort((a,b)=>((a*37+Math.floor(+document.getElementById('seed').value))%chosen.length)-((b*37+Math.floor(+document.getElementById('seed').value))%chosen.length));
-  let selected=[], trial=null;
-  for(const idx of order){
-    const candidate=selected.concat([chosen[idx]]);
-    const r=simulate(candidate);
-    if(r.finishOn!==null && r.onContacts.at(-1).cumulative===0){selected=candidate;trial=r;}
-  }
-  if(trial && (!best || selected.length>best.agents.length || (selected.length===best.agents.length && trial.offContacts.at(-1).cumulative>best.offContacts.at(-1).cumulative)))best=trial;
-}
-if(!best)best=simulate([]);
-best.removed=chosen.map((a,i)=>({id:i+1,a})).filter(v=>!best.agents.includes(v.a)).map(v=>({originalId:v.id,reason:'Unresolvable collision or congestion on its original route under the fixed-route, wait-only policy'}));
-best.requestedCount=chosen.length;
-return best;
-}
-function render(canvas,pos,events,t,flags){const ctx=canvas.getContext('2d'),c=S;ctx.clearRect(0,0,canvas.width,canvas.height);
-for(let y=0;y<H;y++)for(let x=0;x<W;x++){let k=key(x,y),pass=world.open[k];ctx.fillStyle=pass?'#193c59':'#344154';ctx.fillRect(x*c,y*c,c,c);if(!pass){ctx.fillStyle='#40526a';ctx.fillRect(x*c+4,y*c+4,c-8,c-8)}if(document.getElementById('grid').checked){ctx.strokeStyle='#4d658166';ctx.strokeRect(x*c+.5,y*c+.5,c,c)}}
-if(document.getElementById('paths').checked){world.agents.forEach((a,i)=>{ctx.strokeStyle=a.color+'65';ctx.lineWidth=3;ctx.beginPath();a.path.forEach((k,j)=>{let[x,y]=xy(k);j?ctx.lineTo((x+.5)*c,(y+.5)*c):ctx.moveTo((x+.5)*c,(y+.5)*c)});ctx.stroke()})}
-world.agents.forEach((a,i)=>{let[x,y]=xy(a.goal);ctx.strokeStyle=a.color;ctx.lineWidth=2;ctx.strokeRect(x*c+4,y*c+4,c-8,c-8)});
-(flags===null?world.obstacleAt(t):world.safeObstacleAt(t)).forEach((k,i)=>{let[x,y]=xy(k),cx=(x+.5)*c,cy=(y+.5)*c;ctx.fillStyle='#ffe13d';ctx.strokeStyle='#ed363b';ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(cx,cy-c*.42);ctx.lineTo(cx+c*.43,cy+c*.35);ctx.lineTo(cx-c*.43,cy+c*.35);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#7b191f';ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('!',cx,cy+3)});
-pos.forEach((k,i)=>{if(k===null)return;let[x,y]=xy(k),a=world.agents[i];ctx.fillStyle=a.color;ctx.beginPath();ctx.arc((x+.5)*c,(y+.5)*c,c*.39,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#f7fbff';ctx.lineWidth=1.6;ctx.stroke();ctx.fillStyle='#091421';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),(x+.5)*c,(y+.5)*c);if(flags&&flags[i]){ctx.font='14px Arial';ctx.fillText('⏳',(x+.5)*c,(y-.14)*c)}});
-if(document.getElementById('particles').checked)events.forEach((e,i)=>{let[x,y]=xy(e.cell);let cx=(x+.5)*c,cy=(y+.5)*c;ctx.strokeStyle='#ff5252';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,15,0,Math.PI*2);ctx.stroke();ctx.font='22px Arial';ctx.textAlign='center';ctx.fillText('💥',cx,cy-13-i*8)})}
-
-const RULES=[
- {id:'POL-01',title:'Moving obstacle coordination',description:'Mobile obstacles and agents avoid shared pixels; controlled obstacle traffic may also yield.'},
- {id:'POL-02',title:'Agent-to-agent cell reservation',description:'Only one admitted agent may occupy a pixel at a given time.'},
- {id:'POL-03',title:'No head-on edge swapping',description:'Do not exchange adjacent pixels with another agent in one step.'},
- {id:'POL-04',title:'In-maze waiting',description:'Remain at the current pixel until the next route pixel can be occupied safely.'},
- {id:'POL-05',title:'Goal occupancy reservation',description:'A completed agent retains its goal pixel in the simplified model.'}
-];
-const cellLabel=k=>k===null?'Outside maze':`(${xy(k)[0]}, ${xy(k)[1]})`;
-const agentLabel=i=>'A'+String(i+1).padStart(2,'0');
-function getDecision(i,t){
- const a=world.agents[i],p=world.on[t][i],prior=t?world.on[t-1][i]:null;
- const candidate=a.path;
- 
- if(world.blockedAt!==null&&t>world.blockedAt)return {action:'HALTED',rule:'POL-01–04',why:'No safe progression available; last valid positions displayed'};
- if(p===a.goal)return {action:'ARRIVED',rule:'POL-05',why:'Goal pixel reserved'};
- if(t===0)return {action:'READY',rule:'All checks',why:'Physically present at start cell; traffic checks active'};
- if(p!==prior)return {action:'MOVING',rule:'POL-01–03',why:'Admissible next pixel; obstacle and traffic checks pass'};
- const idx=candidate.indexOf(p), next=idx>=0&&idx+1<candidate.length?candidate[idx+1]:null;
- const obs=world.safeObstacleAt(Math.min(t+1,T)), obNow=world.safeObstacleAt(t);
- if(next!==null && obs.includes(next))return {action:'WAITING',rule:'POL-01 / POL-04',why:'Moving obstacle occupies planned next pixel'};
- if(next!==null){
-  for(let j=0;j<world.agents.length;j++){
-   if(j===i)continue;
-   let q=world.on[Math.min(t+1,T)][j],qPrev=world.on[t][j];
-   if(q!==null&&q===next)return {action:'WAITING',rule:'POL-02 / POL-04',why:`Next pixel reserved by ${agentLabel(j)}`};
-   if(q===p&&qPrev===next)return {action:'WAITING',rule:'POL-03 / POL-04',why:`Would swap across edge with ${agentLabel(j)}`};
-  }
- }
- return {action:'WAITING',rule:'POL-04',why:'Scheduled waiting to retain collision-free route timing'};
-}
-function updateInspector(t){
- const filter=document.getElementById('inspectAgent').value;
- const decisions=world.agents.map((a,i)=>getDecision(i,t));
- let rows='', active=new Set();
- for(let i=0;i<world.agents.length;i++){
-  if(filter!=='all'&&+filter!==i)continue;
-  const d=decisions[i],off=world.off[t][i],on=world.on[t][i];
-  if(d.action==='WAITING'||d.action==='QUEUED')active.add('POL-04');
-  if(d.rule.startsWith('POL-01'))active.add('POL-01');
-  if(d.rule.startsWith('POL-02'))active.add('POL-02');
-  if(d.rule.startsWith('POL-03'))active.add('POL-03');
-  if(d.action==='ARRIVED')active.add('POL-05');
-  rows+=`<tr><td><span class="agent-dot" style="background:${world.agents[i].color}"></span><strong>${agentLabel(i)}</strong></td><td>${cellLabel(off)}</td><td>${cellLabel(on)}</td><td><span class="decision ${d.action.toLowerCase()}">${d.action}</span></td><td><strong>${d.rule}</strong><br><span class="micro">${d.why}</span></td></tr>`;
- }
- document.getElementById('agentRows').innerHTML=rows;
- document.getElementById('ruleList').innerHTML=RULES.map(r=>`<div class="rule-row"><span class="rule-id">${r.id}</span><span><strong>${r.title}</strong><small>${r.description}</small></span><span class="rule-state ${active.has(r.id)?'active':'normal'}">${active.has(r.id)?'ACTION':'MONITOR'}</span></div>`).join('');
- const off=world.offContacts[t].events,on=world.onContacts[t].events;
- const describe=(events)=>events.length?events.slice(0,8).map(e=>`${e.type}: ${e.agents.map(agentLabel).join(' + ')} @ ${cellLabel(e.cell)}`).join(' · '):'none';
- document.getElementById('frameEvents').innerHTML=`<span class="fail-text">Without rules: ${off.length} current collision event(s) — ${describe(off)}</span><br><span class="pass-text">With rules: ${on.length} current collision event(s) — ${describe(on)}</span><br><span>Policy actions: ${decisions.filter(x=>x.action==='WAITING').length} waiting, ${decisions.filter(x=>x.action==='QUEUED').length} queued, ${decisions.filter(x=>x.action==='MOVING').length} moving, ${decisions.filter(x=>x.action==='ARRIVED').length} arrived.</span>`;
-}
-function syncInspectorOptions(){
- const s=document.getElementById('inspectAgent');s.innerHTML='<option value="all">All agents</option>'+world.agents.map((a,i)=>`<option value="${i}">${agentLabel(i)}</option>`).join('');
-}
-function update(){let t=+document.getElementById('time').value, o=world.offContacts[t],s=world.onContacts[t];render(document.getElementById('off'),world.off[t],o.events,t,null);render(document.getElementById('on'),world.on[t],s.events,t,world.wflags[t]);document.getElementById('clock').textContent=`Step ${t} / ${T}`;document.getElementById('offcol').textContent=o.cumulative;document.getElementById('oncol').textContent=s.cumulative;document.getElementById('offdone').textContent=world.off[t].filter((p,i)=>p===world.agents[i].goal).length+' / '+world.agents.length;document.getElementById('done').textContent=world.doneCount[t]+' / '+world.agents.length;document.getElementById('offstatus').textContent=o.events.length?'💥 COLLISION':'Blind movement';document.getElementById('onstatus').textContent=world.blockedAt!==null&&t>world.blockedAt?'⚠ NO SAFE PROGRESSION':s.events.length?'⚠ CONFLICT':'Safety policy active';let message=o.events.length?`💥 At step ${t}, the blind simulation has ${o.events.length} new conflict(s).`:t===0?'All agents physically occupy their distinct start pixels in both simulations.':`At step ${t}, the safety policy has issued ${world.waitCount[t]} cumulative wait actions.`;if(world.blockedAt!==null&&t>world.blockedAt)message='⚠ SAFE SCHEDULE INFEASIBLE: '+world.blockedReason+'. The last valid agent frame is frozen, not counted as successful motion.';document.getElementById('narrative').innerHTML='<strong>'+message+'</strong> The right-hand panel follows the same routes, but can pause on a pixel until it is available.';updateInspector(t);}
-function pause(){running=false;cancelAnimationFrame(raf);document.getElementById('play').textContent='▶ Play'}
-function frame(ts){if(!running)return;if(!last)last=ts;let stepms=420/(+document.getElementById('speed').value);if(ts-last>=stepms){let v=+document.getElementById('time').value;if(v>=T){pause();return}document.getElementById('time').value=v+1;update();last=ts}raf=requestAnimationFrame(frame)}
-function init(){pause();world=build();document.getElementById("fleetCount").textContent=`Showing ${world.agents.length} of ${world.requestedCount} candidate agents (${world.removed.length} excluded)`;syncInspectorOptions();
- document.getElementById('offfinish').textContent=world.finishOff+' steps';
- document.getElementById('onfinish').textContent=world.finishOn===null?'Not within '+T:world.finishOn+' steps';
- const note=world.finishOn===null
- ?`All ${world.agents.length} agents start inside the maze in both panels. The safety policy cannot complete all agents within ${T} steps${world.blockedAt!==null?' (infeasible at step '+world.blockedAt+': '+world.blockedReason+')':''}. Blind execution finishes at step ${world.finishOff}, with collision risk. No safe completion time is claimed; fixed shortest routes and waiting-only control can deadlock at high density.`
- :`Showing ${world.agents.length} feasible agents (${world.removed.length} excluded from the original ${world.requestedCount} candidates). All displayed agents reach their goals: blind ${world.finishOff} steps / coordinated ${world.finishOn} steps. Blind conflicts: ${world.offContacts.at(-1).cumulative}, coordinated conflicts: ${world.onContacts.at(-1).cumulative}. Maze, patrols, and retained agents’ shortest routes remain unchanged.`;
- document.getElementById('completionNote').textContent='ℹ️ '+note;
- document.getElementById('time').value=0;update()}
-document.getElementById('play').onclick=()=>{if(running){pause();return}if(+document.getElementById('time').value>=T)document.getElementById('time').value=0;running=true;last=0;document.getElementById('play').textContent='⏸ Pause';raf=requestAnimationFrame(frame)};
-document.getElementById('prev').onclick=()=>{pause();document.getElementById('time').value=Math.max(0,+document.getElementById('time').value-1);update()};document.getElementById('next').onclick=()=>{pause();document.getElementById('time').value=Math.min(T,+document.getElementById('time').value+1);update()};document.getElementById('reset').onclick=()=>{pause();document.getElementById('time').value=0;update()};document.getElementById('find').onclick=()=>{pause();const t=world.offContacts.findIndex(v=>v.events.length);if(t>=0){document.getElementById('time').value=t;update()}};document.getElementById('time').oninput=()=>{pause();update()};['agents','seed'].forEach(id=>document.getElementById(id).onchange=init);['paths','grid','particles'].forEach(id=>document.getElementById(id).onchange=update);document.getElementById('inspectAgent').onchange=update;init();
 </script></body></html>
